@@ -2263,6 +2263,192 @@ input[type=file] {
   letter-spacing: 0.05em;
 }
 
+/* ── 타로 3카드 공유 카드 ── */
+.t3-share-card {
+  background: linear-gradient(160deg, #0c1321 0%, #111827 100%);
+  border: 1px solid rgba(99,102,241,0.25);
+  border-radius: 16px;
+  padding: 22px 20px 16px;
+  margin-top: 6px;
+}
+.t3sc-capture {
+  position: fixed;
+  left: -9999px;
+  top: 0;
+  width: 380px;
+  padding: 28px 24px 22px;
+  z-index: -1;
+}
+.t3sc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+.t3sc-brand {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  color: var(--gold);
+  font-weight: bold;
+}
+.t3sc-capture .t3sc-brand { color: #FBBF24; }
+.t3sc-date {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+.t3sc-capture .t3sc-date { color: #3D4F6E; }
+.t3sc-title {
+  font-family: Georgia, serif;
+  font-size: 18px;
+  color: var(--indigo-light);
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+.t3sc-capture .t3sc-title { color: #818CF8; }
+.t3sc-user {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+.t3sc-capture .t3sc-user { color: #94A3B8; }
+.t3sc-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.t3sc-card {
+  background: rgba(99,102,241,0.06);
+  border: 1px solid rgba(99,102,241,0.18);
+  border-radius: 12px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  grid-template-rows: auto auto;
+  gap: 0 12px;
+}
+.t3sc-card-sym {
+  grid-row: 1 / 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(99,102,241,0.12);
+  border: 1px solid rgba(99,102,241,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.t3sc-card-sym .card-sym-img {
+  width: 28px;
+  height: 28px;
+}
+.t3sc-card-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+}
+.t3sc-card-pos {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  color: var(--indigo-light);
+}
+.t3sc-capture .t3sc-card-pos { color: #818CF8; }
+.t3sc-card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+.t3sc-capture .t3sc-card-name { color: #E2E8F0; }
+.t3sc-card-en {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.t3sc-capture .t3sc-card-en { color: #94A3B8; }
+.t3sc-card-keywords {
+  font-size: 10px;
+  color: var(--indigo-light);
+  background: rgba(99,102,241,0.1);
+  border-radius: 5px;
+  padding: 2px 7px;
+}
+.t3sc-capture .t3sc-card-keywords { color: #818CF8; background: rgba(99,102,241,0.1); }
+.t3sc-card-summary {
+  grid-column: 2;
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-top: 6px;
+}
+.t3sc-capture .t3sc-card-summary { color: #94A3B8; }
+.t3sc-closing {
+  font-size: 13px;
+  color: var(--gold);
+  line-height: 1.7;
+  padding: 12px 14px;
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.15);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+.t3sc-capture .t3sc-closing { color: #FBBF24; }
+.t3sc-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(99,102,241,0.15);
+}
+.t3sc-url {
+  font-size: 13px;
+  color: var(--indigo-light);
+  font-weight: 600;
+}
+.t3sc-capture .t3sc-url { color: #818CF8; }
+.t3sc-tagline {
+  font-size: 10px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+.t3sc-capture .t3sc-tagline { color: #3D4F6E; }
+.t3sc-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+.t3sc-share-btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border2);
+  border-radius: 9px;
+  color: var(--text-muted);
+  font-size: 12px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.t3sc-img-btn:hover {
+  background: rgba(99,102,241,0.12);
+  border-color: var(--indigo-light);
+  color: var(--indigo-light);
+}
+.t3sc-text-btn:hover {
+  background: rgba(212,175,55,0.1);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.t3sc-share-btn:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
 /* ── 후속 상담 유도 ── */
 .followup-prompt {
   border-top: 1px solid rgba(212,175,55,0.15);

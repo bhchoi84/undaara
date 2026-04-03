@@ -768,6 +768,8 @@ async function askClaudeTarot3(prompt, cards) {
     }
     incrementUsage();
     updateUserBadge();
+    // 3카드 요약 공유 카드 추가
+    addTarot3ShareCard(cards, reply);
     addFollowUp();
   } catch (e) {
     typingEl.classList.remove('typing');
@@ -775,6 +777,137 @@ async function askClaudeTarot3(prompt, cards) {
   }
   btn.disabled = false; input.disabled = false; input.focus();
   if (firstCardEl) setTimeout(() => firstCardEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ── 타로 3카드 공유 카드 ── */
+function addTarot3ShareCard(cards, fullReply) {
+  // 각 카드별 요약 한줄 추출 (첫 문장)
+  const sections = fullReply.split(/(?=🔮|🌙|⚠️?|✨)/);
+  const cardEmojis = ['🔮', '🌙', '⚠'];
+  const summaries = [];
+  let closingMsg = '';
+  for (const sec of sections) {
+    const t = sec.trim(); if (!t) continue;
+    if (cardEmojis.some(e => t.startsWith(e))) {
+      // 제목 줄 제거 후 첫 문장 추출
+      const lines = t.split('\n').filter(l => l.trim());
+      const body = lines.slice(1).join(' ').trim();
+      const firstSentence = body.split(/[.!?。]\s*/)[0];
+      summaries.push(firstSentence ? firstSentence + '.' : '');
+    } else if (t.startsWith('✨')) {
+      const lines = t.split('\n').filter(l => l.trim());
+      closingMsg = lines.slice(1).join(' ').trim() || lines[0].replace('✨', '').replace('운 다아라의 한마디', '').trim();
+    }
+  }
+
+  const posEmojis = ['🔮', '🌙', '⚠️'];
+  const posLabels = ['오늘', '미래', '주의'];
+  const u = getUserInfo();
+  const dateStr = new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  let cardsHtml = cards.map((c, i) =>
+    `<div class="t3sc-card">` +
+      `<div class="t3sc-card-sym">${c.sym}</div>` +
+      `<div class="t3sc-card-info">` +
+        `<div class="t3sc-card-pos">${posEmojis[i]} ${posLabels[i]}</div>` +
+        `<div class="t3sc-card-name">${c.name}</div>` +
+        `<div class="t3sc-card-en">${c.en}</div>` +
+        `<div class="t3sc-card-keywords">${c.keywords}</div>` +
+      `</div>` +
+      `<div class="t3sc-card-summary">${summaries[i] || ''}</div>` +
+    `</div>`
+  ).join('');
+
+  const shareCardHtml =
+    `<div class="t3-share-card">` +
+      `<div class="t3sc-header">` +
+        `<div class="t3sc-brand">✦ 운 다아라</div>` +
+        `<div class="t3sc-date">${dateStr}</div>` +
+      `</div>` +
+      `<div class="t3sc-title">오늘의 3카드 타로</div>` +
+      (u ? `<div class="t3sc-user">${u.name}님의 카드</div>` : '') +
+      `<div class="t3sc-cards">${cardsHtml}</div>` +
+      (closingMsg ? `<div class="t3sc-closing">✨ ${closingMsg}</div>` : '') +
+      `<div class="t3sc-footer">` +
+        `<div class="t3sc-url">undaara.com</div>` +
+        `<div class="t3sc-tagline">AI 타로 · 운세 · 손금</div>` +
+      `</div>` +
+      `<div class="t3sc-actions">` +
+        `<button class="t3sc-share-btn t3sc-img-btn" onclick="shareTarot3AsImage(this.closest('.t3-share-card'))">📸 이미지로 공유</button>` +
+        `<button class="t3sc-share-btn t3sc-text-btn" onclick="shareTarot3AsText()">📋 텍스트 공유</button>` +
+      `</div>` +
+    `</div>`;
+
+  addMsg('bot', shareCardHtml, 'card-reveal');
+}
+
+async function shareTarot3AsImage(cardEl) {
+  const btn = cardEl.querySelector('.t3sc-img-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '이미지 생성 중···'; }
+
+  // 캡처용 클론 (버튼 제외)
+  const clone = cardEl.cloneNode(true);
+  clone.querySelector('.t3sc-actions')?.remove();
+  clone.classList.add('t3sc-capture');
+  document.body.appendChild(clone);
+
+  try {
+    const canvas = await html2canvas(clone, {
+      backgroundColor: '#0c1321',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      width: clone.offsetWidth,
+      height: clone.offsetHeight,
+    });
+    clone.remove();
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) { showShareToast('이미지 생성에 실패했어요'); return; }
+      const file = new File([blob], 'undaara-tarot3.png', { type: 'image/png' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: '운 다아라 타로 3카드',
+            text: '✨ AI가 뽑아준 오늘의 타로 카드\n',
+            files: [file],
+          });
+        } catch (e) {
+          if (e.name !== 'AbortError') downloadBlob(blob, 'undaara-tarot3.png');
+        }
+      } else {
+        downloadBlob(blob, 'undaara-tarot3.png');
+        showShareToast('이미지가 저장됐어요! 인스타·카톡에 공유해 보세요');
+      }
+      if (btn) { btn.disabled = false; btn.textContent = '📸 이미지로 공유'; }
+    }, 'image/png');
+  } catch (e) {
+    clone.remove();
+    console.error('Tarot3 share error:', e);
+    showShareToast('이미지 생성 중 오류가 생겼어요');
+    if (btn) { btn.disabled = false; btn.textContent = '📸 이미지로 공유'; }
+  }
+}
+
+function shareTarot3AsText() {
+  if (!drawnCards) return;
+  const u = getUserInfo();
+  const name = u ? u.name + '님의 ' : '';
+  const posLabels = ['🔮 오늘', '🌙 미래', '⚠️ 주의'];
+  let text = `${name}오늘의 3카드 타로\n\n`;
+  drawnCards.forEach((c, i) => {
+    text += `${posLabels[i]} — ${c.name} (${c.en})\n${c.keywords}\n\n`;
+  });
+  text += `✨ 운 다아라 — AI 타로·운세·손금\n${location.origin}`;
+
+  if (navigator.share) {
+    navigator.share({ title: '운 다아라 타로 결과', text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => {
+      showShareToast('결과가 복사됐어요! 붙여넣기로 공유하세요');
+    }).catch(() => showShareToast('복사에 실패했어요'));
+  }
 }
 async function sendMessage() {
   if (!ensureUserInfo(() => sendMessage())) return;
