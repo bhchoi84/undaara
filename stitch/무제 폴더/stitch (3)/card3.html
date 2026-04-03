@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&amp;family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .font-noto-serif { font-family: 'Noto Serif KR', serif; }
+        .writing-vertical { writing-mode: vertical-rl; }
+        .glass-card {
+            background: rgba(21, 28, 41, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(225, 196, 113, 0.15);
+        }
+        .gold-glow {
+            text-shadow: 0 0 10px rgba(226, 196, 113, 0.4);
+        }
+        .fan-gauge {
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            transform-origin: bottom center;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#0c1321",
+              "surface-bright": "#323948",
+              "on-secondary": "#3c2f00",
+              "surface-dim": "#0c1321",
+              "on-surface": "#dce2f6",
+              "tertiary-fixed-dim": "#8ad4c5",
+              "on-secondary-container": "#d9bd6a",
+              "tertiary-fixed": "#a6f1e1",
+              "surface-container-highest": "#2e3544",
+              "on-error": "#690005",
+              "primary": "#d3bbff",
+              "on-tertiary-fixed-variant": "#005046",
+              "error": "#ffb4ab",
+              "surface-container-low": "#151c29",
+              "on-error-container": "#ffdad6",
+              "secondary": "#e1c471",
+              "primary-fixed-dim": "#d3bbff",
+              "on-secondary-fixed": "#231a00",
+              "error-container": "#93000a",
+              "surface-variant": "#2e3544",
+              "surface-tint": "#d3bbff",
+              "on-primary-fixed": "#250059",
+              "outline": "#958e9e",
+              "on-primary-fixed-variant": "#5726a8",
+              "on-primary-container": "#e2d0ff",
+              "on-background": "#dce2f6",
+              "on-primary": "#3f008d",
+              "surface-container-lowest": "#070e1c",
+              "secondary-fixed": "#fee089",
+              "secondary-fixed-dim": "#e1c471",
+              "surface-container-high": "#232a39",
+              "outline-variant": "#4a4453",
+              "primary-fixed": "#ebddff",
+              "inverse-surface": "#dce2f6",
+              "surface-container": "#19202e",
+              "on-secondary-fixed-variant": "#574500",
+              "on-tertiary-fixed": "#00201b",
+              "tertiary": "#8ad4c5",
+              "on-tertiary-container": "#9be6d6",
+              "on-tertiary": "#003730",
+              "on-surface-variant": "#ccc3d5",
+              "tertiary-container": "#17695d",
+              "secondary-container": "#5f4b00",
+              "inverse-primary": "#7043c2",
+              "surface": "#0c1321",
+              "primary-container": "#6f42c1",
+              "inverse-on-surface": "#29303f"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif KR"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface selection:bg-primary/30">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-[#0c1321]/80 backdrop-blur-xl border-b border-white/10 flex justify-between items-center px-6 h-16 shadow-[0_8px_32px_rgba(111,66,193,0.08)]">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#d3bbff]">auto_awesome</span>
+<h1 class="text-2xl font-noto-serif font-bold text-[#e1c471] tracking-tighter">다아라</h1>
+</div>
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary text-sm">person</span>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-2xl mx-auto space-y-12">
+<!-- Tarot Card Reveal Section -->
+<section class="relative group">
+<div class="absolute -inset-4 bg-primary/10 blur-3xl rounded-full opacity-50 group-hover:opacity-100 transition-opacity"></div>
+<div class="relative aspect-[2/3.5] w-full max-w-[320px] mx-auto overflow-hidden rounded-[24px] border-2 border-secondary/30 shadow-[0_20px_50px_rgba(0,0,0,0.5)] bg-surface-container-lowest">
+<img class="w-full h-full object-cover" data-alt="Modern oriental tarot card illustration featuring a majestic gold phoenix rising from dark navy clouds with intricate korean traditional patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwTH0pJ3NYjQMgl56SpTrL2Y-VogArmPJ9lCkZMDWzXVj8ZpCXl0RE5bVSKIqLYi1PGRVn91zo1zSsmdvAKChVgedaDBI0hqtwsW1lPwWg59dfy8QvDq09CkSc88deMPm2AWPlDwd0TuMm1DvL3cF7nQSs55LxwhnpkkQI_VmhIXLTyuseSTHE4fmU6Z32UZ6zKO4Q3AIQr8-ajxyibTZbEIRrcpOUvMzUT2D5hhANI2ptEXWUscVdZj9Ulb3sjkOzo1JMgVU1I1fU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-1/2 -translate-x-1/2 text-center w-full">
+<p class="text-secondary font-noto-serif text-sm tracking-[0.3em] uppercase mb-1">THE PHOENIX</p>
+<h2 class="text-3xl font-noto-serif font-bold text-on-surface">불사조의 재림</h2>
+</div>
+</div>
+</section>
+<!-- Traditional Fan Gauge Section -->
+<section class="flex flex-col items-center space-y-4">
+<p class="text-secondary label-sm tracking-widest font-medium">오늘의 운세 기운</p>
+<div class="relative w-64 h-32 overflow-hidden">
+<!-- Fan Background -->
+<div class="absolute inset-0 flex items-end justify-center">
+<div class="w-64 h-64 rounded-full border-[20px] border-surface-container-high opacity-20"></div>
+</div>
+<!-- Fan Segments -->
+<div class="absolute inset-0 flex items-end justify-center">
+<svg class="w-full h-full" viewbox="0 0 100 50">
+<path class="text-surface-container-highest" d="M 0 50 A 50 50 0 0 1 100 50" fill="none" stroke="currentColor" stroke-width="12"></path>
+<path d="M 0 50 A 50 50 0 0 1 85 15" fill="none" stroke="url(#fan-gradient)" stroke-linecap="round" stroke-width="12"></path>
+<defs>
+<lineargradient id="fan-gradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:var(--tw-gradient-from, #6f42c1)"></stop>
+<stop offset="100%" style="stop-color:var(--tw-gradient-to, #8ad4c5)"></stop>
+</lineargradient>
+</defs>
+</svg>
+</div>
+<div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-2xl font-black text-secondary font-noto-serif gold-glow">88%</div>
+</div>
+<p class="text-on-surface-variant text-sm font-medium italic">"구름 사이로 밝은 달이 나타나는 형국입니다"</p>
+</section>
+<!-- Detailed Interpretations -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- Comprehensive Luck (Main) -->
+<section class="md:col-span-2 glass-card p-8 rounded-[32px] relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-5">
+<span class="material-symbols-outlined text-9xl">flare</span>
+</div>
+<div class="flex gap-6 items-start">
+<div class="writing-vertical font-noto-serif text-2xl font-bold border-l border-secondary/30 pl-4 text-secondary leading-none py-2">
+                        종합운세
+                    </div>
+<div class="flex-1 space-y-4">
+<h3 class="text-xl font-bold font-noto-serif text-on-surface">새로운 시작의 서막</h3>
+<p class="text-on-surface/80 leading-relaxed font-body">
+                            오랫동안 준비해온 일이 드디어 <span class="text-secondary font-bold underline decoration-secondary/30 underline-offset-4">결실을 맺는 시기</span>입니다. 
+                            주변의 작은 변화조차 당신에게는 큰 기회로 다가올 것입니다. 마음을 비우고 흐름에 몸을 맡기십시오. 
+                            귀인이 동쪽에서 나타나 당신의 길을 밝혀줄 것입니다.
+                        </p>
+</div>
+</div>
+</section>
+<!-- Love Luck -->
+<section class="glass-card p-6 rounded-[24px] border-l-4 border-l-primary/40">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-weight="fill">favorite</span>
+<h4 class="font-noto-serif font-bold text-lg">연애운</h4>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                    따뜻한 봄바람이 불어오듯 새로운 인연이 찾아옵니다. 이미 연인이 있다면 더욱 깊은 신뢰를 쌓게 될 것입니다. <span class="text-secondary font-medium">진심 어린 대화</span>가 핵심입니다.
+                </p>
+</section>
+<!-- Wealth Luck -->
+<section class="glass-card p-6 rounded-[24px] border-l-4 border-l-secondary/40">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary" data-weight="fill">payments</span>
+<h4 class="font-noto-serif font-bold text-lg">재물운</h4>
+</div>
+<p class="text-sm text-on-surface-variant leading-relaxed">
+                    재물이 샘물처럼 솟아나는 시기입니다. 다만 지출에 있어 <span class="text-secondary font-medium">절제의 미덕</span>을 발휘해야 더 큰 부를 축적할 수 있습니다. 투자는 신중히 결정하세요.
+                </p>
+</section>
+</div>
+<!-- Keyword Tags -->
+<section class="flex flex-wrap justify-center gap-3">
+<span class="px-4 py-2 rounded-full bg-surface-container text-secondary text-xs font-bold border border-secondary/10">#귀인_상봉</span>
+<span class="px-4 py-2 rounded-full bg-surface-container text-secondary text-xs font-bold border border-secondary/10">#금전운_상승</span>
+<span class="px-4 py-2 rounded-full bg-surface-container text-secondary text-xs font-bold border border-secondary/10">#변화의_바람</span>
+</section>
+<!-- Action Buttons -->
+<section class="flex flex-col gap-4">
+<button class="w-full py-5 bg-gradient-to-r from-primary-container to-primary rounded-full text-on-primary font-bold text-lg shadow-[0_10px_30px_rgba(111,66,193,0.3)] active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">share</span>
+                운세 결과 공유하기
+            </button>
+<button class="w-full py-5 border border-secondary/20 rounded-full text-secondary font-bold text-lg hover:bg-secondary/5 active:scale-95 transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">refresh</span>
+                다른 카드 다시 뽑기
+            </button>
+</section>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full h-20 bg-[#0c1321]/90 backdrop-blur-2xl border-t border-[#e1c471]/10 flex justify-around items-center px-4 pb-4 z-50 shadow-[0_-12px_40px_rgba(0,0,0,0.6)] rounded-t-[24px]">
+<div class="flex flex-col items-center justify-center text-[#d3bbff]/40 hover:text-[#8ad4c5] transition-transform">
+<span class="material-symbols-outlined">flare</span>
+<span class="font-manrope text-[10px] font-medium tracking-tighter">오늘의운세</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#d3bbff]/40 hover:text-[#8ad4c5] transition-transform">
+<span class="material-symbols-outlined">chat_bubble</span>
+<span class="font-manrope text-[10px] font-medium tracking-tighter">신령AI</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#e1c471] font-bold scale-105 active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">style</span>
+<span class="font-manrope text-[10px] font-medium tracking-tighter">카드뽑기</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#d3bbff]/40 hover:text-[#8ad4c5] transition-transform">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="font-manrope text-[10px] font-medium tracking-tighter">운세록</span>
+</div>
+</nav>
+</body></html>

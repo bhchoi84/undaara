@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&amp;family=Manrope:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "background": "#0c1321",
+              "surface-bright": "#323948",
+              "on-secondary": "#3c2f00",
+              "surface-dim": "#0c1321",
+              "on-surface": "#dce2f6",
+              "tertiary-fixed-dim": "#8ad4c5",
+              "on-secondary-container": "#d9bd6a",
+              "tertiary-fixed": "#a6f1e1",
+              "surface-container-highest": "#2e3544",
+              "on-error": "#690005",
+              "primary": "#d3bbff",
+              "on-tertiary-fixed-variant": "#005046",
+              "error": "#ffb4ab",
+              "surface-container-low": "#151c29",
+              "on-error-container": "#ffdad6",
+              "secondary": "#e1c471",
+              "primary-fixed-dim": "#d3bbff",
+              "on-secondary-fixed": "#231a00",
+              "error-container": "#93000a",
+              "surface-variant": "#2e3544",
+              "surface-tint": "#d3bbff",
+              "on-primary-fixed": "#250059",
+              "outline": "#958e9e",
+              "on-primary-fixed-variant": "#5726a8",
+              "on-primary-container": "#e2d0ff",
+              "on-background": "#dce2f6",
+              "on-primary": "#3f008d",
+              "surface-container-lowest": "#070e1c",
+              "secondary-fixed": "#fee089",
+              "secondary-fixed-dim": "#e1c471",
+              "surface-container-high": "#232a39",
+              "outline-variant": "#4a4453",
+              "primary-fixed": "#ebddff",
+              "inverse-surface": "#dce2f6",
+              "surface-container": "#19202e",
+              "on-secondary-fixed-variant": "#574500",
+              "on-tertiary-fixed": "#00201b",
+              "tertiary": "#8ad4c5",
+              "on-tertiary-container": "#9be6d6",
+              "on-tertiary": "#003730",
+              "on-surface-variant": "#ccc3d5",
+              "tertiary-container": "#17695d",
+              "secondary-container": "#5f4b00",
+              "inverse-primary": "#7043c2",
+              "surface": "#0c1321",
+              "primary-container": "#6f42c1",
+              "inverse-on-surface": "#29303f"
+            },
+            fontFamily: {
+              "headline": ["Noto Serif"],
+              "body": ["Manrope"],
+              "label": ["Manrope"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .lattice-pattern {
+            background-image: radial-gradient(circle at 2px 2px, rgba(225, 196, 113, 0.03) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body lattice-pattern min-h-screen pb-24">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 bg-[#0c1321]/80 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_32px_rgba(111,66,193,0.08)] flex justify-between items-center px-6 h-16">
+<div class="flex items-center gap-2 text-[#d3bbff]">
+<span class="material-symbols-outlined" data-icon="auto_awesome">auto_awesome</span>
+<span class="text-2xl font-headline font-bold text-[#e1c471] tracking-tighter">다아라</span>
+</div>
+<div class="w-10 h-10 rounded-full border border-secondary/20 overflow-hidden active:opacity-70 transition-all duration-300">
+<img alt="User Spiritual Profile" class="w-full h-full object-cover" data-alt="close-up portrait of a serene person with soft lighting, spiritual and calm aesthetic, dark moody background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0vZuU8Pifv_ri7FWsKQ766vwSFO200R66HVDjgQcjbMfDPYrodUCHnropbB25EjNXadyhlUXilWf3j8xCXM9VUFARO1taqh5rKzs3Q2HHOpwZmy0k5tVhRiRaj_EG7wdGxwz55urVvSPmiPIVIzUZqkkA3CnIYnBhZyMMs_3Kqp9kOaOVkcPfVRVsFZ0MJPspLUbzDJHtWu29MahVIS5chm0GG8gTBwMIZFIm1bKNVgtb7eKyf9kuedmdDvb2M07j0_mgaLTTvkn5"/>
+</div>
+</nav>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-10">
+<!-- Welcome Section with Sinsun Character -->
+<section class="flex items-end gap-4">
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center border border-tertiary/20 shadow-lg">
+<span class="text-4xl">✨</span>
+<!-- In a real app, this would be a Sinsun vector icon -->
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl rounded-bl-none border border-outline-variant/10 relative">
+<p class="text-on-surface font-medium">오늘 당신을 기다리는 신비로운 운명을 확인해보세요.</p>
+<span class="text-secondary text-xs font-label uppercase tracking-widest mt-1 block">Spirit Guardian</span>
+</div>
+</section>
+<!-- Main Feature: 3 Cards -->
+<section>
+<div class="flex flex-col items-center mb-6">
+<h2 class="text-secondary font-label text-sm tracking-[0.2em] uppercase mb-1">Fortune of the Day</h2>
+<h1 class="text-3xl font-headline italic text-on-background">오늘의 3카드</h1>
+</div>
+<div class="flex justify-center gap-4 py-4 perspective-1000">
+<!-- Card 1 -->
+<div class="w-28 h-44 rounded-xl bg-surface-container-highest border border-secondary/30 shadow-[0_0_20px_rgba(211,187,255,0.1)] relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-secondary/40" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div class="absolute inset-2 border border-secondary/10 rounded-lg"></div>
+</div>
+<!-- Card 2 (Active/Center) -->
+<div class="w-32 h-48 -mt-2 rounded-xl bg-surface-container-highest border-2 border-secondary shadow-[0_0_30px_rgba(225,196,113,0.2)] relative overflow-hidden z-10">
+<div class="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-primary/10"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-5xl text-secondary" style="font-variation-settings: 'FILL' 1;">flare</span>
+</div>
+<div class="absolute inset-2 border border-secondary/20 rounded-lg"></div>
+</div>
+<!-- Card 3 -->
+<div class="w-28 h-44 rounded-xl bg-surface-container-highest border border-secondary/30 shadow-[0_0_20px_rgba(211,187,255,0.1)] relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-secondary/40" style="font-variation-settings: 'FILL' 1;">moon_stars</span>
+</div>
+<div class="absolute inset-2 border border-secondary/10 rounded-lg"></div>
+</div>
+</div>
+<p class="text-center text-on-surface/60 text-sm mt-6 font-body">카드를 터치하여 오늘의 점괘를 확인하세요</p>
+</section>
+<!-- Services Grid -->
+<section class="grid grid-cols-3 gap-4">
+<button class="flex flex-col items-center p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-3 group-hover:shadow-[0_0_15px_rgba(211,187,255,0.3)]">
+<span class="material-symbols-outlined text-primary" data-icon="style">style</span>
+</div>
+<span class="text-xs font-medium text-on-surface">타로 카드</span>
+</button>
+<button class="flex flex-col items-center p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center mb-3 group-hover:shadow-[0_0_15px_rgba(225,196,113,0.3)]">
+<span class="material-symbols-outlined text-secondary" data-icon="flare">flare</span>
+</div>
+<span class="text-xs font-medium text-on-surface">오늘의 운세</span>
+</button>
+<button class="flex flex-col items-center p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center mb-3 group-hover:shadow-[0_0_15px_rgba(138,212,197,0.3)]">
+<span class="material-symbols-outlined text-tertiary" data-icon="psychology">psychology</span>
+</div>
+<span class="text-xs font-medium text-on-surface">AI 손금/관상</span>
+</button>
+<button class="flex flex-col items-center p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="auto_stories">auto_stories</span>
+</div>
+<span class="text-xs font-medium text-on-surface">사주 풀이</span>
+</button>
+<button class="flex flex-col items-center p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="nest_eco_leaf">nest_eco_leaf</span>
+</div>
+<span class="text-xs font-medium text-on-surface">궁합 확인</span>
+</button>
+<button class="flex flex-col items-center p-4 rounded-2xl bg-surface-container hover:bg-surface-container-high transition-all active:scale-95 group">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="brightness_high">brightness_high</span>
+</div>
+<span class="text-xs font-medium text-on-surface">꿈해몽</span>
+</button>
+</section>
+<!-- Premium Insight Banner -->
+<section class="relative overflow-hidden rounded-3xl p-6 bg-gradient-to-br from-primary-container to-surface-container-high">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+<h3 class="text-primary font-headline text-xl mb-2">달의 기운이 깃든 시기</h3>
+<p class="text-on-primary-container/80 text-sm leading-relaxed mb-4">지금은 성찰과 계획에 가장 좋은 시기입니다. 당신의 내면 목소리에 귀를 기울여보세요.</p>
+<button class="bg-secondary text-on-secondary font-bold px-4 py-2 rounded-full text-xs transition-transform active:scale-95">자세히 보기</button>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 bg-[#0c1321]/90 backdrop-blur-2xl border-t border-[#e1c471]/10 shadow-[0_-12px_40px_rgba(0,0,0,0.6)] flex justify-around items-center px-4 pb-4 z-50 rounded-t-[24px]">
+<div class="flex flex-col items-center justify-center text-[#e1c471] font-bold scale-105 transition-all duration-300">
+<span class="material-symbols-outlined mb-1" data-icon="flare" style="font-variation-settings: 'FILL' 1;">flare</span>
+<span class="font-manrope text-[10px] tracking-tighter">오늘의운세</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#d3bbff]/40 hover:text-[#8ad4c5] transition-transform active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined mb-1" data-icon="chat_bubble">chat_bubble</span>
+<span class="font-manrope text-[10px] tracking-tighter">신령AI</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#d3bbff]/40 hover:text-[#8ad4c5] transition-transform active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined mb-1" data-icon="style">style</span>
+<span class="font-manrope text-[10px] tracking-tighter">카드뽑기</span>
+</div>
+<div class="flex flex-col items-center justify-center text-[#d3bbff]/40 hover:text-[#8ad4c5] transition-transform active:scale-90 duration-200 ease-out">
+<span class="material-symbols-outlined mb-1" data-icon="menu_book">menu_book</span>
+<span class="font-manrope text-[10px] tracking-tighter">운세록</span>
+</div>
+</nav>
+</body></html>

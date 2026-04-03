@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>운 다아라 — 당신의 행운 안내자, AI 맞춤 운세·타로·손금</title>
+  <meta name="description" content="당신의 행운 안내자, 운 다아라. AI가 매일 좋은 기운과 함께 타로·사주·손금을 봐드려요. 오늘의 운세, 별자리 궁합, 재물운까지. 이름과 생년월일만 입력하면 무료로 시작!">
+  <meta name="keywords" content="AI 타로, 오늘의 운세, 사주, 손금, 관상, 별자리 운세, 궁합, 재물운, 무료 운세, AI 운세, 타로 카드">
+  <meta name="author" content="운 다아라">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://undaara.com/">
+
+  <!-- Open Graph (카카오톡, 페이스북 등) -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="운 다아라 — 당신의 행운 안내자">
+  <meta property="og:description" content="AI가 매일 좋은 기운과 함께 타로·운세·손금을 봐드려요. 오늘의 운세부터 AI 손금 분석까지, 무료로 바로 시작하세요!">
+  <meta property="og:url" content="https://undaara.com/">
+  <meta property="og:site_name" content="운 다아라">
+  <meta property="og:locale" content="ko_KR">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="운 다아라 — 당신의 행운 안내자">
+  <meta name="twitter:description" content="AI가 매일 좋은 기운과 함께 타로·운세·손금을 봐드려요. 무료로 바로 시작!">
+
+  <!-- 모바일 앱 설정 -->
+  <meta name="theme-color" content="#0c1321">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="운 다아라">
+
+  <!-- 구조화 데이터 (Google 검색 리치 결과) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "운 다아라",
+    "description": "당신의 행운 안내자, AI 맞춤 타로·운세·손금 상담 서비스",
+    "url": "https://undaara.com/",
+    "applicationCategory": "EntertainmentApplication",
+    "operatingSystem": "All",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "KRW",
+      "description": "무료 AI 운세 상담 (일 5회)"
+    },
+    "inLanguage": "ko"
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,700;1,400&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2">
+  <!-- 토스페이먼츠 SDK -->
+  <script src="https://js.tosspayments.com/v1/payment"></script>
+</head>
+
+<body>
+  <!-- 온보딩 스플래시 -->
+  <div class="onboarding-overlay" id="onboarding-overlay">
+    <div class="onboarding-slides" id="onboarding-slides">
+      <div class="onboarding-slide active">
+        <div class="ob-icon">✨</div>
+        <div class="ob-title">운 다아라에 오신 걸 환영해요</div>
+        <div class="ob-desc">당신의 행운 안내자<br>AI가 매일 좋은 기운을 전해드려요</div>
+      </div>
+      <div class="onboarding-slide">
+        <div class="ob-icon">🔮</div>
+        <div class="ob-title">오늘의 타로 카드</div>
+        <div class="ob-desc">매일 바뀌는 3장의 카드가<br>오늘의 행운을 알려드려요</div>
+      </div>
+      <div class="onboarding-slide">
+        <div class="ob-icon">🌙</div>
+        <div class="ob-title">맞춤 운세 상담</div>
+        <div class="ob-desc">별자리·궁합·재물운까지<br>좋은 기운이 흐르는 방향을 알려드려요</div>
+      </div>
+      <div class="onboarding-slide">
+        <div class="ob-icon">🤲</div>
+        <div class="ob-title">AI 손금·관상 분석</div>
+        <div class="ob-desc">사진 한 장이면 충분해요<br>손금 속에 숨겨진 행운을 찾아드려요</div>
+      </div>
+    </div>
+    <div class="onboarding-dots" id="onboarding-dots">
+      <span class="ob-dot active"></span>
+      <span class="ob-dot"></span>
+      <span class="ob-dot"></span>
+      <span class="ob-dot"></span>
+    </div>
+    <button class="onboarding-btn" id="onboarding-btn" onclick="nextOnboardingSlide()">다음</button>
+    <button class="onboarding-skip" onclick="closeOnboarding()">건너뛰기</button>
+  </div>
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="logo">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div class="logo-mark">✨</div>
+          <div>
+            <div class="logo-name main-title-text" id="main-title-m">운 다아라</div>
+            <div class="logo-sub">당신의 행운 안내자</div>
+          </div>
+        </div>
+        <div class="badges mobile-only" style="display:none;"><span class="badge rose">AI 비전</span><span class="badge indigo">실시간 상담</span></div>
+      </div>
+      <div class="cards-section">
+        <div class="section-hd">오늘의 3카드</div>
+        <div class="card-row">
+          <div class="mini-card unflipped" id="sc0" onclick="flippedCards[0]?scrollToCardMsg(0):flipOne(0)">
+            <div class="card-sym">✦</div>
+            <div class="card-pos">오늘</div>
+          </div>
+          <div class="mini-card unflipped" id="sc1" onclick="flippedCards[1]?scrollToCardMsg(1):flipOne(1)">
+            <div class="card-sym">✦</div>
+            <div class="card-pos">미래</div>
+          </div>
+          <div class="mini-card unflipped" id="sc2" onclick="flippedCards[2]?scrollToCardMsg(2):flipOne(2)">
+            <div class="card-sym">✦</div>
+            <div class="card-pos">주의</div>
+          </div>
+        </div>
+        <div class="card-hint" id="card-hint">카드를 클릭해 한 장씩 열거나</div>
+        <button class="draw-btn" id="draw-btn" onclick="drawCards()" style="margin-top:5px">한번에 뽑기</button>
+      </div>
+      <nav class="nav-section">
+        <div class="section-hd">메뉴</div>
+        <div class="nav-item n-tarot active" onclick="goMenu('tarot',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L14.5 9.5 21 12 14.5 14.5 12 21 9.5 14.5 3 12 9.5 9.5 12 3Z"/></svg></span>타로 카드</div>
+        <div class="nav-item n-today" onclick="goMenu('today',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg></span>오늘의 운세</div>
+        <div class="nav-item n-palm" onclick="goMenu('palm',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 00-4 0v4a2 2 0 00-4 0V4a2 2 0 00-4 0v9.5A6.5 6.5 0 0012.5 20h3.09a3 3 0 002.43-1.24l3.18-4.4A1.9 1.9 0 0020 13.12 2 2 0 0018 11V6z"/></svg></span>AI 손금·관상</div>
+        <div class="nav-item n-star" onclick="goMenu('star',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>별자리 운세</div>
+        <div class="nav-item n-match" onclick="goMenu('match',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78v0z"/></svg></span>연애 궁합</div>
+        <div class="nav-item n-money" onclick="goMenu('money',this)"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></span>재물운</div>
+      </nav>
+      <div class="ad-slot">
+        <div class="ad-tag">실시간</div>
+        <div class="ad-body" id="ad-body">오늘 128명이 상담 중</div>
+        <div class="ad-cta">커피 한 잔보다 싼 AI 운세 →</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="main-header desktop-only">
+        <div class="main-title serif main-title-text" id="main-title">운 다아라</div>
+        <div class="badges"><span class="badge rose">AI 비전</span><span class="badge indigo">실시간 상담</span></div>
+      </div>
+
+      <div class="panel active" id="panel-tarot">
+        <div class="user-info-badge" id="user-info-badge" style="display:none" onclick="showUserInfoModal()"></div>
+        <div class="messages" id="messages"></div>
+        <div class="input-area">
+          <input class="chat-input" id="chat-input" placeholder="오늘의 행운이 궁금하다면 편하게 물어보세요..."
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}">
+          <button class="send-btn" id="send-btn" onclick="sendMessage()">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 7L13 7M8 2L13 7L8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-palm">
+        <div class="form-panel" id="palm-panel">
+          <div class="palm-header">
+            <div class="palm-header-title serif">AI 손금·관상</div>
+            <div class="palm-header-sub">먼저 항목을 선택해 주세요</div>
+          </div>
+          <div class="palm-mode-select">
+            <button class="palm-mode-btn" onclick="selectPalmMode('right',this)">
+              <span class="palm-mode-icon">✋</span>
+              <span class="palm-mode-label">오른손</span>
+            </button>
+            <button class="palm-mode-btn" onclick="selectPalmMode('left',this)">
+              <span class="palm-mode-icon">🤚</span>
+              <span class="palm-mode-label">왼손</span>
+            </button>
+            <button class="palm-mode-btn" onclick="selectPalmMode('face',this)">
+              <span class="palm-mode-icon">😊</span>
+              <span class="palm-mode-label">관상</span>
+            </button>
+          </div>
+          <div class="palm-scanner" onclick="openPalmUpload()">
+            <div class="palm-scanner-ring"></div>
+            <div class="palm-scanner-ring palm-scanner-ring-outer"></div>
+            <div class="palm-scanner-inner">
+              <div class="palm-scanner-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+              </div>
+              <div class="palm-scanner-text" id="palm-drop-title">사진 업로드</div>
+              <div class="palm-scanner-sub" id="palm-drop-sub">탭하여 스캔 시작</div>
+            </div>
+          </div>
+          <input type="file" id="palm-file" accept="image/*" onchange="onPalmFile(event)">
+          <div class="palm-guide-grid">
+            <div class="palm-guide-card">
+              <div class="palm-guide-card-header">
+                <div class="palm-guide-dot" style="background:#d3bbff"></div>
+                <span class="palm-guide-card-label" style="color:#d3bbff">Palm Lines</span>
+              </div>
+              <div class="palm-guide-items">
+                <div class="palm-guide-row"><span>감정선</span><div class="palm-guide-bar" style="background:#d3bbff;width:70%"></div></div>
+                <div class="palm-guide-row"><span>지능선</span><div class="palm-guide-bar" style="background:#8ad4c5;width:60%"></div></div>
+                <div class="palm-guide-row"><span>생명선</span><div class="palm-guide-bar" style="background:#e1c471;width:75%"></div></div>
+                <div class="palm-guide-row"><span>운명선</span><div class="palm-guide-bar" style="background:#d3bbff;width:50%"></div></div>
+              </div>
+            </div>
+            <div class="palm-guide-card">
+              <div class="palm-guide-card-header">
+                <div class="palm-guide-dot" style="background:#e1c471"></div>
+                <span class="palm-guide-card-label" style="color:#e1c471">Face Zones</span>
+              </div>
+              <div class="palm-guide-items">
+                <div class="palm-guide-row-bar">
+                  <span>이마·눈썹</span>
+                  <div class="palm-bar-track"><div class="palm-bar-fill" style="width:65%;background:linear-gradient(90deg,rgba(225,196,113,0.2),#e1c471)"></div></div>
+                </div>
+                <div class="palm-guide-row-bar">
+                  <span>눈·코·입</span>
+                  <div class="palm-bar-track"><div class="palm-bar-fill" style="width:50%;background:linear-gradient(90deg,rgba(138,212,197,0.2),#8ad4c5)"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="messages panel-messages" id="messages-palm"></div>
+      </div>
+
+      <div class="panel" id="panel-today">
+        <div class="form-panel">
+          <div class="form-card">
+            <div class="form-title" style="color:#6EE7B7">🌅 오늘의 운세</div>
+            <div class="form-desc">총운·애정·금전·건강까지 — 오늘 하루를 미리 알고 시작하세요</div>
+            <div class="form-row">
+              <div class="form-label">내 별자리</div>
+              <div class="zodiac-grid" id="zg-today">
+                <button class="zodiac-btn" onclick="selectZ('today',this,'양자리')">🐏 양</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'황소자리')">🐂 황소</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'쌍둥이자리')">👯 쌍둥</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'게자리')">🦀 게</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'사자자리')">🦁 사자</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'처녀자리')">🧚 처녀</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'천칭자리')">⚖️ 천칭</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'전갈자리')">🦂 전갈</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'사수자리')">🏹 사수</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'염소자리')">🐐 염소</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'물병자리')">🌊 물병</button>
+                <button class="zodiac-btn" onclick="selectZ('today',this,'물고기자리')">🐠 물고기</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">오늘 특별히 신경 쓰이는 것 (선택)</div>
+              <input class="form-input" id="today-concern" placeholder="예: 연애, 직장, 건강, 시험...">
+            </div>
+            <button class="submit-btn" style="background:linear-gradient(135deg,#065F46,#6EE7B7);color:#022c22"
+              onclick="runToday()">AI 운세 받기 🌅</button>
+            <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
+          </div>
+        </div>
+        <div class="messages panel-messages" id="messages-today"></div>
+      </div>
+
+      <div class="panel" id="panel-star">
+        <div class="form-panel">
+          <div class="form-card">
+            <div class="form-title" style="color:var(--gold)">⭐ 별자리 운세</div>
+            <div class="form-desc">지금 당신의 별자리에 어떤 기운이 흐르고 있을까요?</div>
+            <div class="form-row">
+              <div class="form-label">내 별자리 선택</div>
+              <div class="zodiac-grid" id="zg-a">
+                <button class="zodiac-btn" onclick="selectZ('a',this,'양자리')">🐏 양자리</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'황소자리')">🐂 황소</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'쌍둥이자리')">👯 쌍둥이</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'게자리')">🦀 게자리</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'사자자리')">🦁 사자</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'처녀자리')">🧚 처녀</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'천칭자리')">⚖️ 천칭</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'전갈자리')">🦂 전갈</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'사수자리')">🏹 사수</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'염소자리')">🐐 염소</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'물병자리')">🌊 물병</button>
+                <button class="zodiac-btn" onclick="selectZ('a',this,'물고기자리')">🐠 물고기</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">궁금한 점 (선택)</div>
+              <input class="form-input" id="star-concern" placeholder="예: 연애, 금전, 관계, 미래, 취업...">
+            </div>
+            <button class="submit-btn gold-btn" onclick="runStar()">AI 별자리 운세 보기 ✨</button>
+            <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
+          </div>
+        </div>
+        <div class="messages panel-messages" id="messages-star"></div>
+      </div>
+
+      <div class="panel" id="panel-match">
+        <div class="form-panel">
+          <div class="form-card">
+            <div class="form-title" style="color:var(--rose)">♡ 연애 궁합</div>
+            <div class="form-desc">사주·12지신·오행까지 — 둘의 궁합을 정밀 분석해 드려요</div>
+
+            <div class="match-section-label">💜 나의 정보</div>
+            <div class="match-info-summary" id="match-my-info" onclick="showUserInfoModal()">
+              <span class="match-info-placeholder">나의 정보</span>
+            </div>
+
+            <div class="match-section-label" style="color:var(--rose)">💗 상대방 정보</div>
+            <div class="form-row">
+              <div class="form-label">이름 (닉네임)</div>
+              <input class="form-input" id="match-p-name" type="text" placeholder="예: 수현, 민수" maxlength="10">
+            </div>
+            <div class="form-row">
+              <div class="form-label">생년월일</div>
+              <div class="birth-select-row">
+                <select class="form-input birth-sel" id="match-p-birth-y"></select>
+                <select class="form-input birth-sel" id="match-p-birth-m"></select>
+                <select class="form-input birth-sel" id="match-p-birth-d"></select>
+              </div>
+              <div class="user-modal-gender" style="margin-top:6px">
+                <button class="gender-btn cal-btn match-p-cal active" onclick="selectMatchCalendar('양력',this)">☀️ 양력</button>
+                <button class="gender-btn cal-btn match-p-cal" onclick="selectMatchCalendar('음력',this)">🌙 음력</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">성별</div>
+              <div class="user-modal-gender">
+                <button class="gender-btn match-p-gender" onclick="selectMatchGender('여',this)">여성</button>
+                <button class="gender-btn match-p-gender" onclick="selectMatchGender('남',this)">남성</button>
+                <button class="gender-btn match-p-gender" onclick="selectMatchGender('선택안함',this)">선택안함</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">태어난 시 (선택)</div>
+              <select class="form-input" id="match-p-siji">
+                <option value="">모르겠어요</option>
+                <option value="자시(23:00~01:00)">🐀 자시 (23:00~01:00)</option>
+                <option value="축시(01:00~03:00)">🐂 축시 (01:00~03:00)</option>
+                <option value="인시(03:00~05:00)">🐅 인시 (03:00~05:00)</option>
+                <option value="묘시(05:00~07:00)">🐇 묘시 (05:00~07:00)</option>
+                <option value="진시(07:00~09:00)">🐉 진시 (07:00~09:00)</option>
+                <option value="사시(09:00~11:00)">🐍 사시 (09:00~11:00)</option>
+                <option value="오시(11:00~13:00)">🐴 오시 (11:00~13:00)</option>
+                <option value="미시(13:00~15:00)">🐑 미시 (13:00~15:00)</option>
+                <option value="신시(15:00~17:00)">🐵 신시 (15:00~17:00)</option>
+                <option value="유시(17:00~19:00)">🐔 유시 (17:00~19:00)</option>
+                <option value="술시(19:00~21:00)">🐶 술시 (19:00~21:00)</option>
+                <option value="해시(21:00~23:00)">🐷 해시 (21:00~23:00)</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-label">직업 (선택)</div>
+              <input class="form-input" id="match-p-job" type="text" placeholder="예: 회사원, 학생, 자영업" maxlength="20">
+            </div>
+
+            <div class="form-row">
+              <div class="form-label">관계</div>
+              <select class="form-input" id="match-rel" onchange="toggleMatchRelCustom()">
+                <option value="연인">💕 연인 / 썸</option>
+                <option value="부부">💍 부부</option>
+                <option value="친구">👫 친구</option>
+                <option value="직장동료">💼 직장동료</option>
+                <option value="가족">🏠 가족</option>
+                <option value="직접입력">✏️ 직접 입력</option>
+              </select>
+              <input type="text" class="form-input" id="match-rel-custom" placeholder="관계를 입력해 주세요" style="display:none; margin-top:6px">
+            </div>
+            <button class="submit-btn rose-btn" onclick="runMatch()">AI 궁합 분석 💕</button>
+            <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
+          </div>
+        </div>
+        <div class="messages panel-messages" id="messages-match"></div>
+      </div>
+
+      <div class="panel" id="panel-money">
+        <div class="form-panel">
+          <div class="form-card">
+            <div class="form-title" style="color:var(--teal)">◈ 사주 재물운</div>
+            <div class="form-desc">사주 천간지지·오행·12지신으로 보는 오늘의 재물 흐름</div>
+            <div class="money-my-info" id="money-my-info" onclick="showUserInfoModal()">
+              <span class="match-info-placeholder">내 정보를 입력하면 사주 기반 분석이 가능해요 →</span>
+            </div>
+            <div class="form-row">
+              <div class="form-label">내 띠 (12지신)</div>
+              <div class="zodiac-grid" id="zg-mo">
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'쥐띠')">🐀 쥐</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'소띠')">🐂 소</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'호랑이띠')">🐅 호랑이</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'토끼띠')">🐇 토끼</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'용띠')">🐉 용</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'뱀띠')">🐍 뱀</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'말띠')">🐴 말</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'양띠')">🐑 양</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'원숭이띠')">🐵 원숭이</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'닭띠')">🐔 닭</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'개띠')">🐶 개</button>
+                <button class="zodiac-btn" onclick="selectDdi('mo',this,'돼지띠')">🐷 돼지</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-label">요즘 재정 고민 (선택)</div>
+              <input class="form-input" id="money-concern" placeholder="예: 투자, 이직, 부업, 지출 등...">
+            </div>
+            <button class="submit-btn teal-btn" onclick="runMoney()">사주 재물운 분석 🪙</button>
+            <div class="panel-copyright">&copy; 2025 BSJS. All rights reserved. | 사업자등록번호: 672-05-02394</div>
+          </div>
+        </div>
+        <div class="messages panel-messages" id="messages-money"></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 사용 한도 초과 모달 -->
+  <div class="limit-modal-overlay" id="limit-modal-overlay" style="display:none">
+    <div class="limit-modal">
+      <div class="limit-modal-icon">🔮</div>
+      <div class="limit-modal-title serif">아직 더 궁금한 게 있으시죠?</div>
+      <div class="limit-modal-sub" id="limit-modal-sub">오늘의 무료 상담 3회를 모두 사용했어요.<br><b>지금 87명이 프리미엄으로 상담 중이에요.</b></div>
+      <div class="limit-price-options">
+        <div class="limit-price-card price-selected" id="price-opt-1" onclick="selectPriceOpt(1)">
+          <div class="price-opt-badge hot">오늘만 체험</div>
+          <div class="price-opt-amount">₩99</div>
+          <div class="price-opt-period">1일</div>
+        </div>
+        <div class="limit-price-card" id="price-opt-30" onclick="selectPriceOpt(30)">
+          <div class="price-opt-badge best">인기</div>
+          <div class="price-opt-amount">₩1,900</div>
+          <div class="price-opt-period">30일 <span style="font-size:11px;color:var(--text-muted)">(하루 63원)</span></div>
+        </div>
+      </div>
+      <div class="limit-price-features">
+        <div class="lpf-item">✓ 하루 10회 AI 맞춤 상담</div>
+        <div class="lpf-item">✓ 타로·손금·궁합·재물운 무제한 분석</div>
+        <div class="lpf-item">✓ 빠른 응답 우선 처리</div>
+      </div>
+      <button class="limit-premium-btn" id="limit-pay-btn" onclick="startPayment()">99원으로 오늘 바로 시작</button>
+      <button class="limit-skip-btn" onclick="document.getElementById('limit-modal-overlay').style.display='none'">내일 다시 올게요</button>
+    </div>
+  </div>
+
+  <!-- 사용자 정보 입력 모달 -->
+  <div class="user-modal-overlay" id="user-modal-overlay">
+    <div class="user-modal">
+      <button class="user-modal-close" onclick="document.getElementById('user-modal-overlay').style.display='none'">&times;</button>
+      <div class="user-modal-logo">✨</div>
+      <div class="user-modal-title serif">10초면 끝! 나만의 맞춤 운세 시작</div>
+      <div class="user-modal-sub">기본 정보만으로도 OK! 사주 시간·직업을 추가하면 더 정확해요</div>
+      <div class="um-error" id="um-error" style="display:none"></div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">이름 (닉네임도 좋아요) <span class="um-required">*</span></label>
+        <input class="user-modal-input" id="um-name" type="text" placeholder="예: 지은이, 별이, 민준" maxlength="10">
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">생년월일 <span class="um-required">*</span></label>
+        <div class="birth-select-row">
+          <select class="user-modal-input birth-sel" id="um-birth-y"></select>
+          <select class="user-modal-input birth-sel" id="um-birth-m"></select>
+          <select class="user-modal-input birth-sel" id="um-birth-d"></select>
+        </div>
+        <div class="user-modal-gender" style="margin-top:6px">
+          <button class="gender-btn cal-btn active" onclick="selectCalendar('양력',this)">☀️ 양력</button>
+          <button class="gender-btn cal-btn" onclick="selectCalendar('음력',this)">🌙 음력</button>
+        </div>
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">성별</label>
+        <div class="user-modal-gender">
+          <button class="gender-btn" onclick="selectGender('여',this)">여성</button>
+          <button class="gender-btn" onclick="selectGender('남',this)">남성</button>
+          <button class="gender-btn" onclick="selectGender('선택안함',this)">선택안함</button>
+        </div>
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">태어난 시 (사주용, 선택)</label>
+        <select class="user-modal-input" id="um-siji">
+          <option value="">모르겠어요</option>
+          <option value="자시(23:00~01:00)">🐀 자시 (23:00~01:00)</option>
+          <option value="축시(01:00~03:00)">🐂 축시 (01:00~03:00)</option>
+          <option value="인시(03:00~05:00)">🐅 인시 (03:00~05:00)</option>
+          <option value="묘시(05:00~07:00)">🐇 묘시 (05:00~07:00)</option>
+          <option value="진시(07:00~09:00)">🐉 진시 (07:00~09:00)</option>
+          <option value="사시(09:00~11:00)">🐍 사시 (09:00~11:00)</option>
+          <option value="오시(11:00~13:00)">🐴 오시 (11:00~13:00)</option>
+          <option value="미시(13:00~15:00)">🐑 미시 (13:00~15:00)</option>
+          <option value="신시(15:00~17:00)">🐵 신시 (15:00~17:00)</option>
+          <option value="유시(17:00~19:00)">🐔 유시 (17:00~19:00)</option>
+          <option value="술시(19:00~21:00)">🐶 술시 (19:00~21:00)</option>
+          <option value="해시(21:00~23:00)">🐷 해시 (21:00~23:00)</option>
+        </select>
+      </div>
+      <div class="user-modal-field">
+        <label class="user-modal-label">직업 (선택)</label>
+        <input class="user-modal-input" id="um-job" type="text" placeholder="예: 회사원, 학생, 자영업, 프리랜서" maxlength="20">
+      </div>
+      <button class="user-modal-submit" onclick="submitUserInfo()">무료로 운세 보기 ✨</button>
+    </div>
+  </div>
+
+  <!-- JS 모듈 -->
+  <script src="js/cards.js?v=2"></script>
+  <script src="js/payment.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/tarot.js?v=2"></script>
+  <script src="js/fortune.js?v=2"></script>
+</body>
+
+</html>
