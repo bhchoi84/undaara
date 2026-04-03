@@ -35,13 +35,13 @@ async function fetchSocialProof() {
   } catch (e) { /* silent */ }
 }
 
-// 메인 카운터 업데이트
+// 우측 상단 카운터 업데이트
 function updateSocialProofUI() {
   if (!spData) return;
   const counter = document.getElementById('sp-counter');
   if (counter) {
     const count = spData.todayCount || 0;
-    counter.innerHTML = `<span class="sp-dot"></span>오늘 <b>${count.toLocaleString()}명</b>이 상담을 받았어요`;
+    counter.innerHTML = `<span class="sp-dot"></span>오늘 <b>${count.toLocaleString()}</b>명 상담 중`;
     counter.style.display = count > 0 ? 'flex' : 'none';
   }
 }
@@ -49,7 +49,6 @@ function updateSocialProofUI() {
 // 최근 활동 토스트
 function showRecentToasts() {
   if (!spData || !spData.recent || spData.recent.length === 0) return;
-  // 이미 보여준 건 스킵
   const newEvents = spData.recent.slice(0, 3);
   newEvents.forEach(e => {
     const label = SP_TYPE_LABELS[e.type] || '상담';
@@ -81,7 +80,7 @@ function showSPToast(msg) {
   }
   toast.innerHTML = msg;
   toast.classList.remove('sp-show');
-  void toast.offsetWidth; // reflow
+  void toast.offsetWidth;
   toast.classList.add('sp-show');
   setTimeout(() => toast.classList.remove('sp-show'), 4000);
 }
@@ -93,21 +92,18 @@ function getTimeAgo(dateStr) {
   return `${Math.floor(diff / 3600)}시간 전`;
 }
 
-// 초기화 — 페이지 로드 시 실행
+// 초기화
 function initSocialProof() {
-  // 카운터 DOM 삽입 (메인 화면 상단)
-  const header = document.querySelector('.main-header');
-  if (header && !document.getElementById('sp-counter')) {
+  // 우측 상단 고정 카운터
+  if (!document.getElementById('sp-counter')) {
     const counter = document.createElement('div');
     counter.id = 'sp-counter';
     counter.className = 'sp-counter';
     counter.style.display = 'none';
-    header.parentNode.insertBefore(counter, header.nextSibling);
+    document.body.appendChild(counter);
   }
 
-  // 첫 로드
   fetchSocialProof();
-  // 45초마다 갱신
   setInterval(fetchSocialProof, 45000);
 }
 
