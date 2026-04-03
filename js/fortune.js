@@ -5,6 +5,7 @@ async function runStar() {
   if (!sel.a) { alert('별자리를 선택해 주세요!'); return; }
   const concern = document.getElementById('star-concern')?.value || '';
   showChatPanel('star');
+  if (typeof logSocialEvent === 'function') logSocialEvent('star');
   const cacheKey = `star_${sel.a}${concern ? '_c' : ''}`;
   await askClaude(`나는 ${sel.a}이에요. 오늘(${new Date().toLocaleDateString('ko-KR')}) 나의 별자리 운세를 애정운, 금전운, 건강운으로 나눠서 따뜻하고 구체적으로 알려주세요.${concern ? ` 특히 "${concern}"에 대해 자세히 알려주세요.` : ''} 마지막에 오늘의 한마디로 마무리해 주세요.`, true, '⭐ 별자리 운세 요청', cacheKey, true);
 }
@@ -71,6 +72,7 @@ async function runMatch() {
   }
   const u = getUserInfo();
   showChatPanel('match');
+  if (typeof logSocialEvent === 'function') logSocialEvent('match');
 
   // 나의 띠·사주 정보
   const myYear = parseInt(u.birthdate.slice(0,4));
@@ -149,6 +151,7 @@ async function runMoney() {
   const u = getUserInfo();
   const concern = document.getElementById('money-concern').value;
   showChatPanel('money');
+  if (typeof logSocialEvent === 'function') logSocialEvent('money');
 
   const ddi = sel.mo;
   const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
@@ -178,6 +181,7 @@ async function runToday() {
   if (!sel.today) { alert('별자리를 선택해 주세요!'); return; }
   const concern = document.getElementById('today-concern').value;
   showChatPanel('today');
+  if (typeof logSocialEvent === 'function') logSocialEvent('today');
   const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
   await askClaude(
     `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 운 다아라의 한마디로 마무리해 주세요 🌅`,
@@ -321,6 +325,7 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     typingEl.classList.remove('typing'); typingEl.className = 'palm-result-msg';
     typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${formatReply(reply)}</div><div class="palm-share-actions"><button class="palm-share-img-btn" onclick="shareResultAsImage(this.closest('.palm-result-msg'))"><svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>이미지로 공유</button><button class="palm-share-text-btn" onclick="shareResult(this.closest('.palm-result-msg'))"><svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>텍스트 복사</button></div>`;
     incrementUsage(); updateUserBadge();
+    if (typeof logSocialEvent === 'function') logSocialEvent(palmMode === 'face' ? 'face' : 'palm');
     addFollowUp();
   } catch (err) {
     console.error('Palm analysis error:', err);

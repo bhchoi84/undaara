@@ -768,6 +768,7 @@ async function askClaudeTarot3(prompt, cards) {
     }
     incrementUsage();
     updateUserBadge();
+    if (typeof logSocialEvent === 'function') logSocialEvent('tarot');
     // 3카드 요약 공유 카드 추가
     addTarot3ShareCard(cards, reply);
     addFollowUp();
