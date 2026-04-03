@@ -42,7 +42,7 @@ function updateSocialProofUI() {
   if (counter) {
     const count = spData.todayCount || 0;
     counter.innerHTML = `<span class="sp-dot"></span>오늘 <b>${count.toLocaleString()}</b>명 상담 중`;
-    counter.style.display = count > 0 ? 'flex' : 'none';
+    counter.style.display = 'flex';
   }
 }
 
