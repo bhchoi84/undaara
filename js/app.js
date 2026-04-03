@@ -501,7 +501,7 @@ function showZodiacMismatchModal(savedZodiac, selectedZodiac, onContinue) {
 function shareResult(bubble) {
   // 텍스트 추출 (follow-up 입력창 제외)
   const clone = bubble.cloneNode(true);
-  clone.querySelectorAll('.followup-prompt, .msg-share-btn').forEach(el => el.remove());
+  clone.querySelectorAll('.followup-prompt, .msg-share-btn, .palm-share-actions').forEach(el => el.remove());
   const text = clone.innerText.trim();
   const shareText = `${text}\n\n✨ 운 다아라 — AI 타로·운세·손금\n${location.origin}`;
 
@@ -516,6 +516,87 @@ function shareResult(bubble) {
       showShareToast('복사에 실패했어요');
     });
   }
+}
+
+async function shareResultAsImage(bubble) {
+  const btn = bubble.querySelector('.palm-share-img-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '이미지 생성 중···'; }
+
+  // 캡처용 카드 생성
+  const card = document.createElement('div');
+  card.className = 'share-capture-card';
+
+  // 손금 결과 내용 복제
+  const clone = bubble.cloneNode(true);
+  clone.querySelectorAll('.followup-prompt, .msg-share-btn, .palm-share-actions').forEach(el => el.remove());
+
+  // 헤더
+  const header = clone.querySelector('.palm-result-header');
+  const resultText = clone.querySelector('.palm-result-text');
+
+  card.innerHTML = `
+    <div class="scc-top">
+      <div class="scc-brand">✦ 운 다아라</div>
+      <div class="scc-date">${new Date().toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+    </div>
+    ${header ? `<div class="scc-header">${header.innerHTML}</div>` : ''}
+    <div class="scc-body">${resultText ? resultText.innerHTML : clone.innerHTML}</div>
+    <div class="scc-footer">
+      <div class="scc-url">undaara.com</div>
+      <div class="scc-tagline">AI 타로 · 운세 · 손금 · 관상</div>
+    </div>
+  `;
+
+  document.body.appendChild(card);
+
+  try {
+    const canvas = await html2canvas(card, {
+      backgroundColor: '#0c1321',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      width: card.offsetWidth,
+      height: card.offsetHeight,
+    });
+    card.remove();
+
+    canvas.toBlob(async (blob) => {
+      if (!blob) { showShareToast('이미지 생성에 실패했어요'); return; }
+      const file = new File([blob], 'undaara-result.png', { type: 'image/png' });
+
+      // 모바일: 네이티브 공유 (인스타, 카톡 등)
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            title: '운 다아라 분석 결과',
+            text: '✨ AI가 분석한 나의 손금/관상 결과\n',
+            files: [file],
+          });
+        } catch (e) {
+          if (e.name !== 'AbortError') downloadBlob(blob, 'undaara-result.png');
+        }
+      } else {
+        // PC: 다운로드
+        downloadBlob(blob, 'undaara-result.png');
+        showShareToast('이미지가 저장됐어요! 인스타·카톡에 공유해 보세요');
+      }
+      if (btn) { btn.disabled = false; btn.textContent = '📸 이미지로 공유'; }
+    }, 'image/png');
+  } catch (e) {
+    card.remove();
+    console.error('Share image error:', e);
+    showShareToast('이미지 생성 중 오류가 생겼어요');
+    if (btn) { btn.disabled = false; btn.textContent = '📸 이미지로 공유'; }
+  }
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function showShareToast(msg) {
