@@ -426,7 +426,7 @@ function addMsg(role, content, type = 'text', cardIndex = null) {
   if (role === 'bot' && content !== '생각하고 있어요···' && content !== '카드를 해석하고 있어요···' && content !== '사진을 찬찬히 살펴보고 있어요···') {
     const shareBtn = document.createElement('button');
     shareBtn.className = 'msg-share-btn';
-    shareBtn.innerHTML = '공유';
+    shareBtn.innerHTML = '<svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>공유';
     shareBtn.onclick = function() { shareResult(bubble); };
     msgContent.appendChild(shareBtn);
   }
@@ -833,8 +833,8 @@ function addTarot3ShareCard(cards, fullReply) {
         `<div class="t3sc-tagline">AI 타로 · 운세 · 손금</div>` +
       `</div>` +
       `<div class="t3sc-actions">` +
-        `<button class="t3sc-share-btn t3sc-img-btn" onclick="shareTarot3AsImage(this.closest('.t3-share-card'))">📸 이미지로 공유</button>` +
-        `<button class="t3sc-share-btn t3sc-text-btn" onclick="shareTarot3AsText()">📋 텍스트 공유</button>` +
+        `<button class="t3sc-share-btn t3sc-img-btn" onclick="shareTarot3AsImage(this.closest('.t3-share-card'))"><svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>이미지로 공유</button>` +
+        `<button class="t3sc-share-btn t3sc-text-btn" onclick="shareTarot3AsText()"><svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>텍스트 복사</button>` +
       `</div>` +
     `</div>`;
 
