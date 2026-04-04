@@ -2092,13 +2092,13 @@ input[type=file] {
   line-height: 1.5;
 }
 
-/* ── 행운의 색깔 & 숫자 카드 ── */
-.lucky-card { max-width: 340px; margin: 0 auto; }
+/* ── 행운 카드 (프리미엄 스타일) ── */
+.lucky-card { max-width: 320px; margin: 0 auto; }
 .lucky-card-inner {
-  background: linear-gradient(145deg, rgba(20,28,50,0.95), rgba(12,19,33,0.98));
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 16px;
-  padding: 24px 20px;
+  background: #0f1623;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 20px;
+  padding: 28px 24px 20px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -2106,97 +2106,114 @@ input[type=file] {
 .lucky-card-inner::before {
   content: '';
   position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 50% 0%, var(--lucky-color-light, rgba(128,90,213,0.15)) 0%, transparent 50%);
+  top: 0; left: 0; right: 0;
+  height: 120px;
+  background: radial-gradient(ellipse at 50% -20%, var(--lc, #805AD5)22 0%, transparent 70%);
   pointer-events: none;
 }
-.lucky-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  position: relative;
-}
-.lucky-brand {
-  font-size: 12px;
-  color: var(--gold);
-  font-weight: 600;
-}
-.lucky-date {
+/* 상단 라벨 */
+.lc-top-label {
   font-size: 11px;
   color: var(--text-muted);
-}
-.lucky-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 24px;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
   position: relative;
 }
-.lucky-items {
+.lc-feeling {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  position: relative;
+  letter-spacing: 1px;
+}
+.lc-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  position: relative;
+}
+/* 행운의 숫자 — 대형 */
+.lc-number-section {
+  margin-bottom: 24px;
+  position: relative;
+}
+.lc-section-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.lc-number {
+  font-size: 72px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: 'Georgia', 'Times New Roman', serif;
+  letter-spacing: -2px;
+}
+/* 행운의 색상 */
+.lc-color-section {
+  margin-bottom: 24px;
+  position: relative;
+}
+.lc-color-row {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 12px;
+  margin-top: 10px;
+}
+.lc-color-chip {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 2px solid rgba(255,255,255,0.12);
+  flex-shrink: 0;
+}
+.lc-color-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+/* 오행 + 운의 흐름 하단 박스 */
+.lc-info-row {
+  display: flex;
+  gap: 10px;
   margin-bottom: 20px;
   position: relative;
 }
-.lucky-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+.lc-info-box {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 14px 8px 10px;
+  text-align: center;
 }
-.lucky-color-circle {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.15);
-  transition: transform 0.3s;
-}
-.lucky-color-circle:hover { transform: scale(1.1); }
-.lucky-number-circle {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 3px solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 800;
-  font-family: 'Georgia', serif;
-  transition: transform 0.3s;
-}
-.lucky-number-circle:hover { transform: scale(1.1); }
-.lucky-divider {
-  width: 1px;
-  height: 60px;
-  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.15), transparent);
-}
-.lucky-label {
-  font-size: 11px;
+.lc-info-label {
+  font-size: 10px;
   color: var(--text-muted);
+  margin-bottom: 6px;
   letter-spacing: 1px;
 }
-.lucky-value {
-  font-size: 14px;
+.lc-info-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+.lc-info-value {
+  font-size: 13px;
   font-weight: 600;
   color: #fff;
 }
-.lucky-zodiac {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-  position: relative;
-}
-.lucky-footer {
+/* 브랜드 */
+.lc-brand {
   font-size: 10px;
-  color: rgba(255,255,255,0.25);
+  color: rgba(255,255,255,0.2);
   position: relative;
 }
+/* 공유 버튼 */
 .lucky-share-actions {
   display: flex;
   gap: 8px;
