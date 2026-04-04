@@ -200,10 +200,39 @@ async function runToday() {
   const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
   await askClaude(
     `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 운 다아라의 한마디로 마무리해 주세요 🌅`,
-    true, `🌅 오늘의 운세 (${sel.today})`, cacheKey, true
+    true, `🌅 오늘의 운세 (${sel.today})`, cacheKey, false
   );
-  // 행운 카드 생성
-  setTimeout(() => addLuckyCard(sel.today), 300);
+  // 1) 행운 카드 → 2) 추가 상담 순서
+  setTimeout(() => {
+    addLuckyCard(sel.today);
+    setTimeout(() => addTodayFollowUp(), 400);
+  }, 300);
+}
+
+function addTodayFollowUp() {
+  const msgs = document.getElementById(typeof currentMsgBoxId !== 'undefined' ? currentMsgBoxId : 'messages');
+  if (!msgs) return;
+  const u = getUserInfo();
+  const name = u ? u.name : '고객';
+  const followMsgs = [
+    `지금까지 본 건 큰 흐름이에요.\n${name}님의 오늘은 또 다른 이야기를 품고 있을 수 있답니다.\n더 깊이 알고 싶은 부분이 있으시면 알려주세요 ✨`,
+    `위 내용은 ${name}님의 전체적인 흐름을 살펴본 거예요.\n요즘 마음에 걸리는 일이 있으시다면, 편하게 말씀해 주세요 🙏`,
+    `운세는 날마다 조금씩 달라져요.\n${name}님에게 특별히 궁금한 점이 있으시면 편하게 여쭤보세요 🌙`,
+  ];
+  const msg = followMsgs[Math.floor(Math.random() * followMsgs.length)];
+  const html = `
+    <div class="followup-prompt">
+      <div class="followup-text">${msg.replace(/\n/g, '<br>')}</div>
+      <div class="followup-input-wrap">
+        <input type="text" class="followup-input" placeholder="궁금한 점을 편하게 말씀해 주세요..." onkeydown="if(event.key==='Enter')sendFollowUp(this)">
+        <button class="followup-send" onclick="sendFollowUp(this.previousElementSibling)">보내기</button>
+      </div>
+    </div>`;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg bot';
+  wrapper.innerHTML = `<div class="msg-avatar">✦</div><div class="msg-content"><span class="msg-label">운 다아라</span><div class="msg-bubble">${html}</div></div>`;
+  msgs.appendChild(wrapper);
+  wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 /* ── 행운 카드 (이미지 스타일) ── */
