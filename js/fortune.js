@@ -259,7 +259,18 @@ const LUCKY_COLOR_MAP = {
   '크림색':'#FEF3C7','크림':'#FEF3C7','연보라':'#C4B5FD','연분홍':'#FBCFE8',
 };
 
-const OHAENG_EMOJI = { '목':'🌿', '화':'🔥', '토':'🏔️', '금':'⚙️', '수':'💧' };
+const OHAENG_SVG = {
+  '목': '<svg viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22V8"/><path d="M5 12s2.5-4 7-4 7 4 7 4"/><path d="M7 16s1.5-3 5-3 5 3 5 3"/><path d="M9 4s1-2 3-2 3 2 3 2"/></svg>',
+  '화': '<svg viewBox="0 0 24 24" fill="none" stroke="#E53E3E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c-4-2-8-6-8-11a8 8 0 0116 0c0 5-4 9-8 11z"/><path d="M12 22c2-1 4-3 4-6a4 4 0 00-8 0c0 3 2 5 4 6z"/></svg>',
+  '토': '<svg viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l4-8 4 4 4-6 6 10H3z"/><circle cx="18" cy="6" r="2"/></svg>',
+  '금': '<svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26"/></svg>',
+  '수': '<svg viewBox="0 0 24 24" fill="none" stroke="#3182CE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l-2 7h4l-2 7"/><path d="M2 17c2-2 4-3 6-3s4 1 6 3 4 3 6 3"/><path d="M2 21c2-2 4-3 6-3s4 1 6 3 4 3 6 3"/></svg>',
+};
+const FLOW_SVG = {
+  '상승기': '<svg viewBox="0 0 24 24" fill="none" stroke="#38A169" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+  '안정기': '<svg viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="6" y2="12"/><polyline points="6 12 9 8 12 14 15 10 18 12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>',
+  '전환기': '<svg viewBox="0 0 24 24" fill="none" stroke="#805AD5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><polyline points="23 20 23 14 17 14"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10"/><path d="M3.51 15A9 9 0 0018.36 18.36L23 14"/></svg>',
+};
 const OHAENG_HANJA = { '목':'木', '화':'火', '토':'土', '금':'金', '수':'水' };
 
 function addLuckyCard(zodiac) {
@@ -277,14 +288,22 @@ function _buildLuckyCard(zodiac) {
   let luckyColor = '', luckyNumber = '';
   // 다양한 패턴 매칭
   const cPatterns = [
-    /행운.{0,5}색[깔상]?\s*[:：→\-]?\s*([가-힣a-zA-Z]+)/,
+    /행운.{0,5}색[깔상]?\s*[:：→\-]?\s*([가-힣]+[색])/,
+    /행운.{0,5}색[깔상]?\s*[:：→\-]?\s*([가-힣a-zA-Z]{2,})/,
     /럭키\s*컬러\s*[:：→\-]?\s*([가-힣a-zA-Z]+)/,
+    /색[깔상]\s*[:：→\-]\s*([가-힣a-zA-Z]{2,})/,
   ];
   const nPatterns = [
     /행운.{0,5}숫자\s*[:：→\-]?\s*(\d+)/,
     /럭키\s*넘버\s*[:：→\-]?\s*(\d+)/,
   ];
-  for (const p of cPatterns) { const m = text.match(p); if (m) { luckyColor = m[1].trim().replace(/[은는이가을를의]$/, ''); break; } }
+  for (const p of cPatterns) {
+    const m = text.match(p);
+    if (m) {
+      luckyColor = m[1].trim().replace(/[은는이가을를의에]$/, '').replace(/^깔/, '');
+      if (luckyColor.length >= 2) break;
+    }
+  }
   for (const p of nPatterns) { const m = text.match(p); if (m) { luckyNumber = m[1].trim(); break; } }
   if (!luckyColor) luckyColor = '보라색';
   if (!luckyNumber) luckyNumber = String(Math.floor(Math.random() * 89) + 11);
@@ -338,7 +357,7 @@ function _buildLuckyCard(zodiac) {
         </div>
 
         <div class="lc-color-section">
-          <div class="lc-section-label">행운의 색상</div>
+          <div class="lc-section-label">행운의 색</div>
           <div class="lc-color-row">
             <div class="lc-color-chip" style="background:${hex};box-shadow:0 0 16px ${hex}88"></div>
             <div class="lc-color-name">${luckyColor}</div>
@@ -348,12 +367,12 @@ function _buildLuckyCard(zodiac) {
         <div class="lc-info-row">
           <div class="lc-info-box">
             <div class="lc-info-label">오행</div>
-            <div class="lc-info-icon">${OHAENG_EMOJI[ohaengName] || '🔥'}</div>
+            <div class="lc-info-svg">${OHAENG_SVG[ohaengName] || OHAENG_SVG['화']}</div>
             <div class="lc-info-value">${ohaengName}(${OHAENG_HANJA[ohaengName] || ''})</div>
           </div>
           <div class="lc-info-box">
             <div class="lc-info-label">운의 흐름</div>
-            <div class="lc-info-icon">${flowText === '상승기' ? '📈' : flowText === '안정기' ? '📊' : '🔄'}</div>
+            <div class="lc-info-svg">${FLOW_SVG[flowText] || FLOW_SVG['상승기']}</div>
             <div class="lc-info-value">${flowText}</div>
           </div>
         </div>
