@@ -2100,7 +2100,7 @@ input[type=file] {
   z-index: 900;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 .sp-counter {
   display: flex;
