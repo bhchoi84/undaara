@@ -2092,6 +2092,144 @@ input[type=file] {
   line-height: 1.5;
 }
 
+/* ── 행운의 색깔 & 숫자 카드 ── */
+.lucky-card { max-width: 340px; margin: 0 auto; }
+.lucky-card-inner {
+  background: linear-gradient(145deg, rgba(20,28,50,0.95), rgba(12,19,33,0.98));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  padding: 24px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.lucky-card-inner::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle at 50% 0%, var(--lucky-color-light, rgba(128,90,213,0.15)) 0%, transparent 50%);
+  pointer-events: none;
+}
+.lucky-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+}
+.lucky-brand {
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 600;
+}
+.lucky-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.lucky-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 24px;
+  letter-spacing: 2px;
+  position: relative;
+}
+.lucky-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.lucky-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.lucky-color-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid rgba(255,255,255,0.15);
+  transition: transform 0.3s;
+}
+.lucky-color-circle:hover { transform: scale(1.1); }
+.lucky-number-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 3px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 800;
+  font-family: 'Georgia', serif;
+  transition: transform 0.3s;
+}
+.lucky-number-circle:hover { transform: scale(1.1); }
+.lucky-divider {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(180deg, transparent, rgba(255,255,255,0.15), transparent);
+}
+.lucky-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+.lucky-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+.lucky-zodiac {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  position: relative;
+}
+.lucky-footer {
+  font-size: 10px;
+  color: rgba(255,255,255,0.25);
+  position: relative;
+}
+.lucky-share-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.lucky-share-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lucky-share-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.lucky-share-btn .share-icon { width: 16px; height: 16px; }
+.lucky-img-btn {
+  background: linear-gradient(135deg, #6366f1, #818cf8);
+  color: #fff;
+}
+.lucky-text-btn {
+  background: linear-gradient(135deg, #d4a017, #f0c040);
+  color: #1a1a2e;
+}
+
 /* ── 소셜 프루프 + 햄버거 메뉴 ── */
 .sp-top-bar {
   position: fixed;

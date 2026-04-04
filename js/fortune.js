@@ -199,9 +199,136 @@ async function runToday() {
   if (typeof logSocialEvent === 'function') logSocialEvent('today');
   const cacheKey = `today_${sel.today}${concern ? '_c' : ''}`;
   await askClaude(
-    `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 운 다아라의 한마디로 마무리해 주세요 🌅`,
+    `나는 ${sel.today}이에요. 오늘(${new Date().toLocaleDateString('ko-KR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })})의 전체 운세를 봐주세요.${concern ? ` 특히 "${concern}"에 대해 신경이 쓰여요.` : ''} 오늘의 총운, 애정운, 금전운, 건강운, 오늘의 행운 색깔/숫자를 포함해서 따뜻하고 구체적으로 알려주세요. 마지막에 오늘 하루를 위한 운 다아라의 한마디로 마무리해 주세요 🌅\n\n중요: 답변 맨 마지막 줄에 반드시 아래 형식으로 행운 정보를 추가해 주세요(이 줄은 파싱용이니 그대로 지켜주세요):\n[LUCK]색깔:빨간색|숫자:7[/LUCK]`,
     true, `🌅 오늘의 운세 (${sel.today})`, cacheKey, true
   );
+  // 행운 카드 생성
+  setTimeout(() => addLuckyCard(sel.today), 300);
+}
+
+// 행운의 색깔 & 숫자 카드
+function addLuckyCard(zodiac) {
+  const msgs = document.getElementById('messages');
+  if (!msgs) return;
+  // 마지막 봇 메시지에서 [LUCK] 태그 파싱
+  const botBubbles = msgs.querySelectorAll('.msg.bot .msg-bubble');
+  const lastBubble = botBubbles[botBubbles.length - 1];
+  if (!lastBubble) return;
+
+  let luckyColor = '', luckyNumber = '';
+  const html = lastBubble.innerHTML;
+  const luckMatch = html.match(/\[LUCK\]색깔:([^|]+)\|숫자:([^\[]+)\[\/LUCK\]/);
+  if (luckMatch) {
+    luckyColor = luckMatch[1].trim();
+    luckyNumber = luckMatch[2].trim();
+    // [LUCK] 태그를 결과에서 제거
+    lastBubble.innerHTML = html.replace(/\[LUCK\].*?\[\/LUCK\]/, '').replace(/<br>\s*$/, '');
+  } else {
+    // 태그 없으면 텍스트에서 추출 시도
+    const colorMatch = html.match(/행운.{0,5}색[깔상]?\s*[:：]?\s*([가-힣a-zA-Z]+)/);
+    const numMatch = html.match(/행운.{0,5}숫자\s*[:：]?\s*(\d+)/);
+    luckyColor = colorMatch ? colorMatch[1].trim() : '보라색';
+    luckyNumber = numMatch ? numMatch[1].trim() : '7';
+  }
+
+  const colorMap = {
+    '빨간색':'#E53E3E','빨강':'#E53E3E','레드':'#E53E3E','red':'#E53E3E',
+    '주황색':'#ED8936','주황':'#ED8936','오렌지':'#ED8936','orange':'#ED8936',
+    '노란색':'#ECC94B','노랑':'#ECC94B','옐로우':'#ECC94B','yellow':'#ECC94B','금색':'#D4A017','골드':'#D4A017',
+    '초록색':'#38A169','초록':'#38A169','녹색':'#38A169','그린':'#38A169','green':'#38A169',
+    '파란색':'#3182CE','파랑':'#3182CE','블루':'#3182CE','blue':'#3182CE',
+    '남색':'#2B6CB0','네이비':'#2B6CB0','navy':'#2B6CB0',
+    '보라색':'#805AD5','보라':'#805AD5','퍼플':'#805AD5','purple':'#805AD5','라벤더':'#B794F4',
+    '분홍색':'#ED64A6','분홍':'#ED64A6','핑크':'#ED64A6','pink':'#ED64A6','로즈':'#F56565',
+    '하늘색':'#63B3ED','스카이블루':'#63B3ED','skyblue':'#63B3ED',
+    '흰색':'#E2E8F0','화이트':'#E2E8F0','white':'#E2E8F0','아이보리':'#FFFFF0',
+    '검정':'#2D3748','검은색':'#2D3748','블랙':'#2D3748','black':'#2D3748',
+    '갈색':'#8B6914','브라운':'#8B6914','brown':'#8B6914',
+    '민트':'#38B2AC','민트색':'#38B2AC','터콰이즈':'#38B2AC',
+    '코랄':'#FC8181','살구색':'#FBD38D','베이지':'#F5E6CC',
+  };
+  const hex = colorMap[luckyColor] || '#805AD5';
+  const hexLight = hex + '33';
+  const dateStr = new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' });
+
+  const cardHtml = `
+    <div class="lucky-card" id="lucky-card">
+      <div class="lucky-card-inner" style="--lucky-color:${hex};--lucky-color-light:${hexLight}">
+        <div class="lucky-header">
+          <span class="lucky-brand">✦ 운 다아라</span>
+          <span class="lucky-date">${dateStr}</span>
+        </div>
+        <div class="lucky-title">오늘의 행운</div>
+        <div class="lucky-items">
+          <div class="lucky-item">
+            <div class="lucky-color-circle" style="background:${hex};box-shadow:0 0 20px ${hex}88"></div>
+            <div class="lucky-label">행운의 색</div>
+            <div class="lucky-value">${luckyColor}</div>
+          </div>
+          <div class="lucky-divider"></div>
+          <div class="lucky-item">
+            <div class="lucky-number-circle" style="border-color:${hex};color:${hex}">${luckyNumber}</div>
+            <div class="lucky-label">행운의 숫자</div>
+            <div class="lucky-value">${luckyNumber}</div>
+          </div>
+        </div>
+        <div class="lucky-zodiac">${zodiac}</div>
+        <div class="lucky-footer">undaara.com · AI 맞춤 운세</div>
+      </div>
+      <div class="lucky-share-actions">
+        <button class="lucky-share-btn lucky-img-btn" onclick="shareLuckyCardAsImage()">
+          <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          이미지로 공유
+        </button>
+        <button class="lucky-share-btn lucky-text-btn" onclick="shareLuckyCardAsText('${luckyColor}','${luckyNumber}','${zodiac}')">
+          <svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          텍스트 복사
+        </button>
+      </div>
+    </div>`;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg bot';
+  wrapper.innerHTML = `<div class="msg-avatar">✦</div><div class="msg-content"><div class="msg-bubble" style="padding:0;background:none;border:none;backdrop-filter:none">${cardHtml}</div></div>`;
+  msgs.appendChild(wrapper);
+  wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function shareLuckyCardAsImage() {
+  const card = document.querySelector('.lucky-card-inner');
+  if (!card) return;
+  try {
+    const canvas = await html2canvas(card, {
+      backgroundColor: '#0c1321',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+    canvas.toBlob(async (blob) => {
+      if (!blob) { showShareToast('이미지 생성에 실패했어요'); return; }
+      const file = new File([blob], 'undaara-lucky.png', { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ title: '운 다아라 - 오늘의 행운', files: [file] });
+        } catch {}
+      } else {
+        downloadBlob(blob, 'undaara-lucky.png');
+        showShareToast('이미지가 저장되었어요!');
+      }
+    }, 'image/png');
+  } catch {
+    showShareToast('이미지 생성에 실패했어요');
+  }
+}
+
+function shareLuckyCardAsText(color, number, zodiac) {
+  const dateStr = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
+  const text = `✦ 운 다아라 - 오늘의 행운\n${dateStr} · ${zodiac}\n\n🎨 행운의 색: ${color}\n🔢 행운의 숫자: ${number}\n\n오늘 하루도 좋은 일만 가득하길!\n👉 undaara.com`;
+  if (navigator.share) {
+    navigator.share({ title: '운 다아라 - 오늘의 행운', text }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text).then(() => showShareToast('복사되었어요!'));
+  }
 }
 
 /* ── 손금·관상 분석 ── */
