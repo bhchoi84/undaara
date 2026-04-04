@@ -419,7 +419,7 @@ function shareLuckyCardAsText() {
   const oh = card.querySelector('.lc-info-box:first-child .lc-info-value')?.textContent || '';
   const flow = card.querySelector('.lc-info-box:last-child .lc-info-value')?.textContent || '';
   const dateStr = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
-  const text = `✦ 운 다아라 - 오늘의 운세\n${dateStr}\n\n${feeling}\n\n행운의 숫자: ${num}\n행운의 색: ${color}\n오행: ${oh}\n운의 흐름: ${flow}\n\nundaara.com`;
+  const text = `오늘의 감정: ${feeling} / 행운의 숫자: ${num} / 행운의 색: ${color}`;
   navigator.clipboard.writeText(text).then(() => showShareToast('복사되었어요!')).catch(() => showShareToast('복사에 실패했어요'));
 }
 
