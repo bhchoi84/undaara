@@ -188,27 +188,13 @@ function saveUserInfo(name, birthdate, gender, siji, job, calendar) {
   const today = new Date().toISOString().slice(0,10);
   const zodiac = getZodiac(birthdate);
   const age = today.slice(0,4) - birthdate.slice(0,4);
-  // 천간지지 계산 (사주 연주·일주)
-  const saju = getSaju(birthdate);
+  // 만세력 기반 사주팔자 계산
+  const saju = calcManseryuk(birthdate, siji || null, calendar || '양력');
   localStorage.setItem('undaara_user', JSON.stringify({ name, birthdate, gender, zodiac, age, siji: siji || '', job: job || '', saju, calendar: calendar || '양력', date: today }));
 }
-function getSaju(birthdate) {
-  const heavenly = ['갑','을','병','정','무','기','경','신','임','계'];
-  const earthly = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
-  const y = parseInt(birthdate.slice(0,4));
-  // 연주 (년간지)
-  const yH = heavenly[(y - 4) % 10];
-  const yE = earthly[(y - 4) % 12];
-  // 일주 (일간지) — 기준일 2000-01-07(경진일)로부터 계산
-  const base = new Date(2000, 0, 7);
-  const target = new Date(birthdate);
-  const diff = Math.round((target - base) / 86400000);
-  const dH = heavenly[((diff % 10) + 10) % 10]; // 경=6이므로 offset 6
-  const dE = earthly[((diff % 12) + 12) % 12]; // 진=4이므로 offset 4
-  // 보정: 2000-01-07 = 경(6)진(4)
-  const dHi = (6 + diff % 10 + 10) % 10;
-  const dEi = (4 + diff % 12 + 12) % 12;
-  return { year: yH + yE, day: heavenly[dHi] + earthly[dEi] };
+// 하위 호환용 — 외부에서 getSaju() 호출하는 곳 대응
+function getSaju(birthdate, siji) {
+  return calcManseryuk(birthdate, siji || null);
 }
 function getUserContext() {
   const u = getUserInfo();
@@ -221,10 +207,21 @@ function getUserContext() {
   const currentSiji = ['자시','축시','인시','묘시','진시','사시','오시','미시','신시','유시','술시','해시'][Math.floor(((hour + 1) % 24) / 2)];
   if (!u) return `\n[현재] ${dateStr} ${timeStr} (${currentSiji})${locStr}`;
   let ctx = `\n[사용자] 이름: ${u.name} / 생년월일: ${u.birthdate}(${u.calendar || '양력'}, ${u.age}세) / 성별: ${u.gender} / 별자리: ${u.zodiac}`;
-  if (u.saju) ctx += ` / 사주 연주: ${u.saju.year} / 일주: ${u.saju.day}`;
+  if (u.saju) {
+    const s = u.saju;
+    ctx += ` / 만세력 사주팔자: 년주 ${s.year?.ganji || s.year || ''} 월주 ${s.month?.ganji || ''} 일주 ${s.day?.ganji || s.day || ''}`;
+    if (s.hour) ctx += ` 시주 ${s.hour.ganji}(${s.hour.name})`;
+    ctx += ` / 일간: ${s.day?.gan || ''}(${s.dayYinYang || ''})`;
+    if (s.ohaengCount) ctx += ` / 오행분포: 목${s.ohaengCount.목} 화${s.ohaengCount.화} 토${s.ohaengCount.토} 금${s.ohaengCount.금} 수${s.ohaengCount.수}`;
+    if (s.lackOhaeng && s.lackOhaeng.length > 0) ctx += ` / 부족오행: ${s.lackOhaeng.join(',')}`;
+    if (s.unseong) ctx += ` / 십이운성: ${s.unseong}`;
+  }
   if (u.siji) ctx += ` / 태어난 시: ${u.siji}`;
   if (u.job) ctx += ` / 직업: ${u.job}`;
+  // 오늘 날의 만세력
+  const todayMs = getTodayManseryuk();
   ctx += `\n[현재] ${dateStr} ${timeStr} (${currentSiji})${locStr}`;
+  ctx += ` / 오늘 만세력: 년주 ${todayMs.year.ganji} 월주 ${todayMs.month.ganji} 일주 ${todayMs.day.ganji}`;
   return ctx;
 }
 function selectGender(val, el) {
@@ -693,7 +690,8 @@ async function askClaude(overrideMsg, isAuto, userLabel, cacheKey = null, showFo
   const system = `당신은 따뜻하고 섬세한 AI 행운 안내자 '운 다아라'입니다. 사용자에게 좋은 기운과 희망을 전하는 것이 당신의 사명입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 성별·나이에 관계없이 "~님"으로 호칭하며, 정중하고 따뜻한 존댓말을 씁니다. "오빠/언니/누나/형" 같은 호칭은 절대 쓰지 않습니다.
 사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
-사주 정보(연주, 일주, 태어난 시)가 있으면 천간지지·오행의 기운을 해석에 녹여주세요.
+만세력 기반 사주팔자(년주·월주·일주·시주)가 있으면 천간지지·오행·십이운성의 기운을 해석에 정확히 녹여주세요. 부족한 오행이 있으면 보완 조언도 해주세요.
+오늘의 만세력(일간지)과 사용자 사주의 상호작용(상생·상극)을 자연스럽게 반영하세요.
 오늘 날짜·요일·현재 시진과 사용자 위치의 계절감·기운을 자연스럽게 반영하세요.
 직업이 있으면 직업 특성에 맞는 구체적 조언(직장운, 사업운, 학업운 등)을 포함하세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.
@@ -741,7 +739,8 @@ async function askClaudeTarot3(prompt, cards) {
   const system = `당신은 따뜻하고 섬세한 AI 행운 안내자 '운 다아라'입니다. 사용자에게 좋은 기운과 희망을 전하는 것이 당신의 사명입니다.${getUserContext()}
 사용자 감정에 먼저 공감해 주세요. 성별·나이에 관계없이 "~님"으로 호칭하며, 정중하고 따뜻한 존댓말을 씁니다. "오빠/언니/누나/형" 같은 호칭은 절대 쓰지 않습니다.
 사용자의 이름, 별자리, 나이, 성별, 직업을 자연스럽게 반영해 개인화된 답변을 해주세요.
-사주 정보(연주, 일주, 태어난 시)가 있으면 천간지지·오행의 기운을 해석에 녹여주세요.
+만세력 기반 사주팔자(년주·월주·일주·시주)가 있으면 천간지지·오행·십이운성의 기운을 해석에 정확히 녹여주세요. 부족한 오행이 있으면 보완 조언도 해주세요.
+오늘의 만세력(일간지)과 사용자 사주의 상호작용(상생·상극)을 자연스럽게 반영하세요.
 오늘 날짜·요일·현재 시진과 사용자 위치의 계절감·기운을 자연스럽게 반영하세요.
 직업이 있으면 직업 특성에 맞는 구체적 조언을 포함하세요.
 "~것 같아요", "~할 수 있어요" 처럼 단정 짓지 않고 부드럽게 표현합니다.

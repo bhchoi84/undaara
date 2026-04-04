@@ -32,7 +32,8 @@ function updateMatchMyInfo() {
   const emoji = DDI_EMOJI[ddi] || '';
   const cal = u.calendar || '양력';
   let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${cal} · ${u.age}세 · ${u.gender}`;
-  if (u.saju) html += ` · 연주:${u.saju.year} 일주:${u.saju.day}`;
+  if (u.saju && u.saju.year) html += ` · ${u.saju.year.ganji || u.saju.year}${u.saju.month ? ' '+u.saju.month.ganji : ''} ${u.saju.day.ganji || u.saju.day}`;
+  if (u.saju && u.saju.hour) html += ` ${u.saju.hour.ganji}`;
   if (u.siji) html += ` · ${u.siji.split('(')[0]}`;
   if (u.job) html += ` · ${u.job}`;
   html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
@@ -55,10 +56,10 @@ function getPartnerInfo() {
   const job = document.getElementById('match-p-job').value.trim();
   const zodiac = getZodiac(birth);
   const age = new Date().getFullYear() - parseInt(birth.slice(0,4));
-  const saju = getSaju(birth);
+  const saju = calcManseryuk(birth, siji || null);
   const ddi = getDdi(parseInt(birth.slice(0,4)));
   const calendar = matchPartnerCalendar || '양력';
-  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siji, job, ddi, calendar };
+  return { name, birthdate: birth, gender, zodiac, age, saji: saju, siju: saju, siji, job, ddi, calendar };
 }
 
 async function runMatch() {
@@ -80,7 +81,11 @@ async function runMatch() {
   const myEmoji = DDI_EMOJI[myDdi] || '';
   const myCal = u.calendar || '양력';
   let myInfo = `${u.name}(${myEmoji} ${myDdi}, ${myCal} ${u.birthdate}, ${u.age}세, ${u.gender}`;
-  if (u.saju) myInfo += `, 연주:${u.saju.year} 일주:${u.saju.day}`;
+  if (u.saju && u.saju.summary) {
+    myInfo += `, 만세력 사주: ${u.saju.summary}`;
+    if (u.saju.dayYinYang) myInfo += `, 일간 ${u.saju.day.gan}(${u.saju.dayYinYang})`;
+    if (u.saju.lackOhaeng && u.saju.lackOhaeng.length > 0) myInfo += `, 부족오행:${u.saju.lackOhaeng.join(',')}`;
+  }
   if (u.siji) myInfo += `, ${u.siji.split('(')[0]}생`;
   if (u.job) myInfo += `, ${u.job}`;
   myInfo += ')';
@@ -90,7 +95,11 @@ async function runMatch() {
   const pDdi = getDdi(pYear);
   const pEmoji = DDI_EMOJI[pDdi] || '';
   let pInfo = `${partner.name}(${pEmoji} ${pDdi}, ${partner.calendar || '양력'} ${partner.birthdate}, ${partner.age}세, ${partner.gender}`;
-  if (partner.saji) pInfo += `, 연주:${partner.saji.year} 일주:${partner.saji.day}`;
+  if (partner.saji && partner.saji.summary) {
+    pInfo += `, 만세력 사주: ${partner.saji.summary}`;
+    if (partner.saji.dayYinYang) pInfo += `, 일간 ${partner.saji.day.gan}(${partner.saji.dayYinYang})`;
+    if (partner.saji.lackOhaeng && partner.saji.lackOhaeng.length > 0) pInfo += `, 부족오행:${partner.saji.lackOhaeng.join(',')}`;
+  }
   if (partner.siji) pInfo += `, ${partner.siji.split('(')[0]}생`;
   if (partner.job) pInfo += `, ${partner.job}`;
   pInfo += ')';
@@ -132,7 +141,8 @@ function updateMoneyMyInfo() {
   const emoji = DDI_EMOJI[ddi] || '';
   const cal = u.calendar || '양력';
   let html = `<span class="match-info-filled"><b>${u.name}</b> · ${emoji} ${ddi} · ${cal} · ${u.age}세`;
-  if (u.saju) html += ` · 연주:${u.saju.year} 일주:${u.saju.day}`;
+  if (u.saju && u.saju.year) html += ` · ${u.saju.year.ganji || u.saju.year}${u.saju.month ? ' '+u.saju.month.ganji : ''} ${u.saju.day.ganji || u.saju.day}`;
+  if (u.saju && u.saju.hour) html += ` ${u.saju.hour.ganji}`;
   if (u.siji) html += ` · ${u.siji.split('(')[0]}생`;
   if (u.job) html += ` · ${u.job}`;
   html += `</span> <span style="font-size:11px;color:var(--text-muted)">수정 →</span>`;
@@ -157,7 +167,12 @@ async function runMoney() {
   const today = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
 
   let sajuInfo = '';
-  if (u.saju) sajuInfo += `사주 연주: ${u.saju.year}, 일주: ${u.saju.day}. `;
+  if (u.saju && u.saju.summary) {
+    sajuInfo += `만세력 사주: ${u.saju.summary}. 일간 ${u.saju.day?.gan || ''}(${u.saju.dayYinYang || ''}). `;
+    if (u.saju.ohaengCount) sajuInfo += `오행분포: 목${u.saju.ohaengCount.목} 화${u.saju.ohaengCount.화} 토${u.saju.ohaengCount.토} 금${u.saju.ohaengCount.금} 수${u.saju.ohaengCount.수}. `;
+    if (u.saju.lackOhaeng && u.saju.lackOhaeng.length > 0) sajuInfo += `부족오행: ${u.saju.lackOhaeng.join(',')}. `;
+    if (u.saju.unseong) sajuInfo += `십이운성: ${u.saju.unseong}. `;
+  }
   if (u.siji) sajuInfo += `태어난 시: ${u.siji}. `;
 
   const cacheKey = `money_saju_${u.birthdate}_${ddi}`;
