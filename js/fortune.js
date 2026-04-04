@@ -286,25 +286,14 @@ function _buildLuckyCard(zodiac) {
   // AI 응답 텍스트에서 색깔/숫자 파싱
   const text = lastBubble.textContent || '';
   let luckyColor = '', luckyNumber = '';
-  // 다양한 패턴 매칭
-  const cPatterns = [
-    /행운.{0,5}색[깔상]?\s*[:：→\-]?\s*([가-힣]+[색])/,
-    /행운.{0,5}색[깔상]?\s*[:：→\-]?\s*([가-힣a-zA-Z]{2,})/,
-    /럭키\s*컬러\s*[:：→\-]?\s*([가-힣a-zA-Z]+)/,
-    /색[깔상]\s*[:：→\-]\s*([가-힣a-zA-Z]{2,})/,
-  ];
-  const nPatterns = [
-    /행운.{0,5}숫자\s*[:：→\-]?\s*(\d+)/,
-    /럭키\s*넘버\s*[:：→\-]?\s*(\d+)/,
-  ];
-  for (const p of cPatterns) {
-    const m = text.match(p);
-    if (m) {
-      luckyColor = m[1].trim().replace(/[은는이가을를의에]$/, '').replace(/^깔/, '');
-      if (luckyColor.length >= 2) break;
-    }
+  // 알려진 색 이름 목록에서 직접 매칭 (가장 확실한 방법)
+  const knownColors = Object.keys(LUCKY_COLOR_MAP);
+  for (const c of knownColors.sort((a, b) => b.length - a.length)) {
+    if (text.includes(c)) { luckyColor = c; break; }
   }
-  for (const p of nPatterns) { const m = text.match(p); if (m) { luckyNumber = m[1].trim(); break; } }
+  // 숫자 파싱
+  const nMatch = text.match(/행운.{0,5}숫자\s*[:：→\-]?\s*(\d+)/) || text.match(/럭키\s*넘버\s*[:：→\-]?\s*(\d+)/);
+  if (nMatch) luckyNumber = nMatch[1].trim();
   if (!luckyColor) luckyColor = '보라색';
   if (!luckyNumber) luckyNumber = String(Math.floor(Math.random() * 89) + 11);
 
@@ -430,12 +419,8 @@ function shareLuckyCardAsText() {
   const oh = card.querySelector('.lc-info-box:first-child .lc-info-value')?.textContent || '';
   const flow = card.querySelector('.lc-info-box:last-child .lc-info-value')?.textContent || '';
   const dateStr = new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' });
-  const text = `✦ 운 다아라 - 오늘의 운세\n${dateStr}\n\n${feeling}\n\n🔢 행운의 숫자: ${num}\n🎨 행운의 색상: ${color}\n${OHAENG_EMOJI[oh.split('(')[0]] || '🔥'} 오행: ${oh}\n📈 운의 흐름: ${flow}\n\n👉 undaara.com`;
-  if (navigator.share) {
-    navigator.share({ title: '운 다아라 - 오늘의 행운', text }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text).then(() => showShareToast('복사되었어요!'));
-  }
+  const text = `✦ 운 다아라 - 오늘의 운세\n${dateStr}\n\n${feeling}\n\n행운의 숫자: ${num}\n행운의 색: ${color}\n오행: ${oh}\n운의 흐름: ${flow}\n\nundaara.com`;
+  navigator.clipboard.writeText(text).then(() => showShareToast('복사되었어요!')).catch(() => showShareToast('복사에 실패했어요'));
 }
 
 /* ── 손금·관상 분석 ── */
