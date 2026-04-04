@@ -2844,9 +2844,9 @@ input[type=file] {
 
 /* ── 후속 상담 유도 ── */
 .followup-prompt {
-  border-top: 1px solid rgba(212,175,55,0.15);
-  padding-top: 14px;
-  margin-top: 14px;
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
 }
 .followup-text {
   font-size: 13.5px;

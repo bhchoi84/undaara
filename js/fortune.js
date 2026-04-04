@@ -215,9 +215,9 @@ function addTodayFollowUp() {
   const u = getUserInfo();
   const name = u ? u.name : '고객';
   const followMsgs = [
-    `지금까지 본 건 큰 흐름이에요.\n${name}님의 오늘은 또 다른 이야기를 품고 있을 수 있답니다.\n더 깊이 알고 싶은 부분이 있으시면 알려주세요 ✨`,
-    `위 내용은 ${name}님의 전체적인 흐름을 살펴본 거예요.\n요즘 마음에 걸리는 일이 있으시다면, 편하게 말씀해 주세요 🙏`,
-    `운세는 날마다 조금씩 달라져요.\n${name}님에게 특별히 궁금한 점이 있으시면 편하게 여쭤보세요 🌙`,
+    `지금까지 본 건 큰 흐름이에요.\n${name}님의 오늘은 또 다른 이야기를 품고 있을 수 있답니다.\n더 깊이 알고 싶은 부분이 있으시면 알려주세요.`,
+    `위 내용은 ${name}님의 전체적인 흐름을 살펴본 거예요.\n요즘 마음에 걸리는 일이 있으시다면, 편하게 말씀해 주세요.`,
+    `운세는 날마다 조금씩 달라져요.\n${name}님에게 특별히 궁금한 점이 있으시면 편하게 여쭤보세요.`,
   ];
   const msg = followMsgs[Math.floor(Math.random() * followMsgs.length)];
   const html = `
