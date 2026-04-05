@@ -32,6 +32,9 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'POST') {
+      if (req.headers['content-length'] && Number(req.headers['content-length']) > 1024) {
+        return res.status(413).json({ error: 'Payload too large' });
+      }
       const { type } = req.body || {};
       if (!type) return res.status(400).json({ error: 'type required' });
       const allowed = ['tarot', 'palm', 'face', 'star', 'match', 'money', 'today'];

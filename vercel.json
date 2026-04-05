@@ -11,6 +11,12 @@
     },
     "api/location.js": {
       "maxDuration": 10
+    },
+    "api/premium-check.js": {
+      "maxDuration": 10
+    },
+    "api/payment-confirm.js": {
+      "maxDuration": 30
     }
   }
 }

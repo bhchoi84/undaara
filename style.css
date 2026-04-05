@@ -1326,6 +1326,46 @@ body {
   font-size: 13px; cursor: pointer; padding: 4px;
 }
 .limit-skip-btn:hover { color: var(--text); }
+/* 전화번호 입력 */
+.limit-phone-wrap {
+  width: 100%;
+  margin-top: 2px;
+}
+.limit-phone-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.limit-phone-input:focus { border-color: var(--indigo); }
+.limit-phone-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+.limit-phone-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-align: center;
+}
+/* 복원 버튼 */
+.limit-restore-btn {
+  background: none;
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  color: var(--indigo-light);
+  font-size: 13px;
+  padding: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.limit-restore-btn:hover {
+  background: var(--indigo-pale);
+  border-color: var(--indigo);
+}
 /* ── 사용 횟수 인디케이터 ── */
 .usage-indicator {
   display: flex; gap: 4px; align-items: center; margin-left: auto;
@@ -2267,6 +2307,8 @@ input[type=file] {
   align-items: center;
   gap: 10px;
 }
+/* 사이드바 접힌 상태에서 숨김 */
+body.sb-collapsed .sp-top-bar { display: none !important; }
 .sp-counter {
   display: flex;
   align-items: center;
@@ -2852,6 +2894,29 @@ input[type=file] {
 }
 
 /* ── 후속 상담 유도 ── */
+/* ── 에러 복구 UI ── */
+.error-recovery {
+  text-align: center;
+  padding: 16px 0 8px;
+}
+.error-recovery p {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+.retry-btn {
+  background: linear-gradient(135deg, var(--indigo-dim), var(--indigo));
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.retry-btn:hover { opacity: 0.85; }
+.retry-btn:active { transform: scale(0.97); }
+
 .followup-prompt {
   border-top: none;
   padding-top: 0;

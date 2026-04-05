@@ -12,10 +12,12 @@ const SP_TYPE_EMOJI = {
 let spData = null;
 let spToastQueue = [];
 let spToastShowing = false;
+let spMyCount = 0;
 
 // 이벤트 기록
 async function logSocialEvent(type) {
   try {
+    spMyCount++;
     await fetch('/api/social-proof', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -40,7 +42,7 @@ function updateSocialProofUI() {
   if (!spData) return;
   const counter = document.getElementById('sp-counter');
   if (counter) {
-    const count = spData.todayCount || 0;
+    const count = Math.max((spData.todayCount || 0) - spMyCount, 0);
     counter.innerHTML = `<span class="sp-dot"></span><b>${count.toLocaleString()}</b>명 상담 중`;
     counter.style.display = count > 0 ? 'flex' : 'none';
   }

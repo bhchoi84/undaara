@@ -23,9 +23,11 @@ export default async function handler(req, res) {
 
   /* 요청 유효성 검사 */
   const { model, max_tokens, system, messages } = req.body;
-  if (!messages || !Array.isArray(messages)) {
+  if (!messages || !Array.isArray(messages) || messages.length === 0 || messages.length > 30) {
     return res.status(400).json({ error: 'Invalid request body' });
   }
+  const safeMaxTokens = Math.min(Math.max(Number(max_tokens) || 3000, 1), 8000);
+  const safeModel = ['claude-haiku-4-5-20251001'].includes(model) ? model : 'claude-haiku-4-5-20251001';
 
   /* Anthropic API 호출 */
   try {
@@ -36,7 +38,7 @@ export default async function handler(req, res) {
         'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
       },
-      body: JSON.stringify({ model, max_tokens, system, messages }),
+      body: JSON.stringify({ model: safeModel, max_tokens: safeMaxTokens, system, messages }),
     });
 
     const data = await response.json();

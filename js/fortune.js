@@ -14,12 +14,12 @@ let matchPartnerGender = '';
 let matchPartnerCalendar = '양력';
 function selectMatchGender(val, el) {
   matchPartnerGender = val;
-  document.querySelectorAll('.match-p-gender').forEach(b => b.classList.remove('active'));
+  el.parentElement.querySelectorAll('.match-p-gender').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
 }
 function selectMatchCalendar(val, el) {
   matchPartnerCalendar = val;
-  document.querySelectorAll('.match-p-cal').forEach(b => b.classList.remove('active'));
+  el.parentElement.querySelectorAll('.match-p-cal').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
 }
 
@@ -522,6 +522,10 @@ function onPalmFile(e) {
 async function analyzePalm() {
   if (!ensureUserInfo(() => analyzePalm())) return;
   if (!palmImageData) return;
+  if (!canUsePalm()) {
+    document.getElementById('limit-modal-overlay').style.display = 'flex';
+    return;
+  }
   if (!palmMode) { alert('오른손 / 왼손 / 관상 중 하나를 먼저 선택해 주세요!'); return; }
   if (!canUseAPI()) { document.getElementById('limit-modal-overlay').style.display = 'flex'; return; }
   showChatPanel('palm');
@@ -553,22 +557,72 @@ ${palmMode === 'right' ? '오른손은 현재와 미래, 현실에서 실제로 
     resultTitle = '👁 관상 분석 결과';
     resultSub = '이마 · 눈썹 · 눈 · 코 · 입';
   }
-  try {
-    const res = await callGeminiAPI({ max_tokens: 3000, system, messages: [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: palmImageData } }, { type: 'text', text: userText }] }] });
-    const reply = res?.content?.[0]?.text || '사진이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊';
+  const palmMessages = [{ role: 'user', content: [{ type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: palmImageData } }, { type: 'text', text: userText }] }];
+  function showPalmResult(reply) {
     typingEl.classList.remove('typing'); typingEl.className = 'palm-result-msg';
     typingEl.innerHTML = `<div class="palm-result-header"><img src="${palmPreviewSrc}" class="palm-result-thumb" alt="${modeLabel}"><div><div class="palm-result-title">${resultTitle}</div><div class="palm-result-sub">${resultSub}</div></div></div><div class="palm-result-text">${formatReply(reply)}</div><div class="palm-share-actions"><button class="palm-share-img-btn" onclick="shareResultAsImage(this.closest('.palm-result-msg'))"><svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>이미지로 공유</button><button class="palm-share-text-btn" onclick="shareResult(this.closest('.palm-result-msg'))"><svg class="share-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>텍스트 복사</button></div>`;
-    incrementUsage(); updateUserBadge();
+    incrementUsage(); incrementPalmUsage(); updateUserBadge();
     if (typeof logSocialEvent === 'function') logSocialEvent(palmMode === 'face' ? 'face' : 'palm');
     addFollowUp();
+  }
+  try {
+    const res = await callGeminiAPI({ max_tokens: 3000, system, messages: palmMessages });
+    showPalmResult(res?.content?.[0]?.text || '사진이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊');
   } catch (err) {
-    console.error('Palm analysis error:', err);
-    typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊<br><small style="opacity:0.5">' + (err.message || '') + '</small>';
+    try {
+      const res = await callAPI({ model: 'claude-haiku-4-5-20251001', max_tokens: 3000, system, messages: palmMessages });
+      showPalmResult(res?.content?.[0]?.text || '사진이 잘 보이지 않아요. 더 밝은 곳에서 다시 찍어 올려주시겠어요? 😊');
+    } catch (err2) {
+      console.error('Palm analysis error:', err2);
+      typingEl.classList.remove('typing'); typingEl.innerHTML = '분석 중 오류가 생겼어요. 잠깐 후 다시 시도해 주세요 😊<br><small style="opacity:0.5">' + (err2.message || '') + '</small>';
+    }
   }
   btn.disabled = false; input.disabled = false; input.focus();
   document.getElementById(currentMsgBoxId).scrollTop = 99999;
   palmImageData = null; palmPreviewSrc = null;
   resetPalmPanel();
+}
+
+/* ── 월간 운세 ── */
+async function runMonthly() {
+  if (!ensureUserInfo(() => runMonthly())) return;
+  if (!sel.monthly) { alert('별자리를 선택해 주세요!'); return; }
+  const now = new Date();
+  const monthName = now.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long' });
+  showChatPanel('monthly');
+  if (typeof logSocialEvent === 'function') logSocialEvent('monthly');
+  const cacheKey = `monthly_${sel.monthly}_${now.getFullYear()}_${now.getMonth()}`;
+  await askClaude(
+    `나는 ${sel.monthly}이에요. ${monthName}의 월간 운세를 전체적으로 봐주세요.\n\n다음 항목을 모두 포함해서 구체적이고 따뜻하게 작성해 주세요:\n📅 이번 달 총운\n💕 애정운\n💰 금전운\n💼 직장/학업운\n💪 건강운\n⚠️ 이번 달 주의할 점\n✨ 운 다아라의 한마디\n\n각 항목마다 3~4문장 이상 구체적으로 작성해 주세요. 마지막에 이번 달을 위한 따뜻한 응원 한마디로 마무리해 주세요 📅`,
+    true, `📅 ${monthName} 월간 운세 (${sel.monthly})`, cacheKey, false
+  );
+  setTimeout(() => addMonthlyFollowUp(), 400);
+}
+
+function addMonthlyFollowUp() {
+  const msgs = document.getElementById(typeof currentMsgBoxId !== 'undefined' ? currentMsgBoxId : 'messages');
+  if (!msgs) return;
+  const u = getUserInfo();
+  const name = u ? u.name : '고객';
+  const followMsgs = [
+    `이 달의 큰 흐름을 살펴봤어요.\n${name}님, 특별히 이번 달 걱정되는 부분이 있다면 편하게 물어보세요.`,
+    `위 내용은 ${name}님의 이번 달 전체 흐름이에요.\n더 자세히 알고 싶은 운세가 있으시면 말씀해 주세요.`,
+    `한 달은 긴 여정이에요.\n${name}님에게 특별히 궁금한 시기나 이벤트가 있으면 알려주세요.`,
+  ];
+  const msg = followMsgs[Math.floor(Math.random() * followMsgs.length)];
+  const html = `
+    <div class="followup-prompt">
+      <div class="followup-text">${msg.replace(/\n/g, '<br>')}</div>
+      <div class="followup-input-wrap">
+        <input type="text" class="followup-input" placeholder="이번 달 궁금한 점을 편하게 말씀해 주세요..." onkeydown="if(event.key==='Enter')sendFollowUp(this)">
+        <button class="followup-send" onclick="sendFollowUp(this.previousElementSibling)">보내기</button>
+      </div>
+    </div>`;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg bot';
+  wrapper.innerHTML = `<div class="msg-avatar">✦</div><div class="msg-content"><span class="msg-label">운 다아라</span><div class="msg-bubble">${html}</div></div>`;
+  msgs.appendChild(wrapper);
+  wrapper.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function resetPalmPanel() {

@@ -22,9 +22,10 @@ export default async function handler(req, res) {
   }
 
   const { system, messages, max_tokens } = req.body;
-  if (!messages || !Array.isArray(messages)) {
+  if (!messages || !Array.isArray(messages) || messages.length === 0 || messages.length > 30) {
     return res.status(400).json({ error: 'Invalid request body' });
   }
+  const safeMaxTokens = Math.min(Math.max(Number(max_tokens) || 4000, 1), 8000);
 
   /* Anthropic 형식 → Gemini 형식 변환 (텍스트 + 이미지 지원) */
   const geminiContents = messages.map(m => {
@@ -46,7 +47,7 @@ export default async function handler(req, res) {
   const geminiBody = {
     contents: geminiContents,
     generationConfig: {
-      maxOutputTokens: max_tokens || 4000,
+      maxOutputTokens: safeMaxTokens,
       temperature: 0.8,
     },
   };

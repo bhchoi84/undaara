@@ -36,7 +36,10 @@ style.css         — 전체 CSS (다크 테마, 반응형)
 js/
   cards.js        — 타로 카드 78장 데이터 (CARDS, TITLES, CARD_POS)
   payment.js      — 토스페이먼츠 결제 로직
-  app.js          — 코어: 사용량 관리, 캐싱, 사용자 정보, UI 공통, API 호출, 초기화
+  state.js        — 상태 관리, 사용량 제한, 캐싱, 사용자 정보, 소셜 프루프
+  ui.js           — UI 컴포넌트, DOM 조작, 메시지 출력, 공유, 생년월일 피커
+  api.js          — API 호출, AI 응답 처리, 후속 상담, 에러 복구
+  app.js          — 초기화 & 이벤트 바인딩 (slim)
   tarot.js        — 타로 카드 뽑기/뒤집기/해석
   fortune.js      — 운세 기능 (별자리·궁합·재물·오늘의 운세) + 손금·관상 분석
 api/
@@ -48,11 +51,15 @@ vercel.json       — /api/* 요청을 서버리스 함수로 라우팅
 
 `index.html` 하단에서 순서대로 로드. 빌드 도구 없이 `<script src>` 태그 사용:
 
-1. `js/cards.js` — 순수 데이터, 의존성 없음
-2. `js/payment.js` — 결제 함수 선언 (app.js 함수는 DOMContentLoaded 시점에 사용)
-3. `js/app.js` — 코어 함수 + DOMContentLoaded 핸들러
-4. `js/tarot.js` — 카드 뽑기 로직
-5. `js/fortune.js` — 운세/손금/관상 로직
+1. `js/manseryuk.js` — 만세력 계산 모듈
+2. `js/cards.js` — 순수 데이터, 의존성 없음
+3. `js/payment.js` — 결제 함수 선언
+4. `js/state.js` — 상태·사용량·캐싱·사용자 정보 (DOM 없는 순수 로직)
+5. `js/ui.js` — UI 컴포넌트·메시지 출력·공유 (state.js 의존)
+6. `js/api.js` — API 호출·AI 응답 처리·후속 상담 (state.js + ui.js 의존)
+7. `js/app.js` — 초기화 & 이벤트 바인딩 (모든 모듈 의존)
+8. `js/tarot.js` — 카드 뽑기 로직
+9. `js/fortune.js` — 운세/손금/관상 로직
 
 ### API 호출 흐름
 

@@ -91,5 +91,5 @@ const CARDS = [
   { sym: SYM_PENTACLE, name: '동전의 왕', en: 'King of Pentacles', keywords: '부, 안정, 성공' },
 ];
 
-const TITLES = { tarot: '다아라', palm: 'AI 손금·관상', star: '별자리 운세', match: '연애 궁합', money: '재물운', today: '오늘의 운세' };
+const TITLES = { tarot: '다아라', palm: 'AI 손금·관상', star: '별자리 운세', match: '연애 궁합', money: '재물운', today: '오늘의 운세', monthly: '월간 운세' };
 const CARD_POS = ['오늘', '미래', '주의할일'];
