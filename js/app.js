@@ -83,4 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // 서버 프리미엄 상태 동기화 (백그라운드)
   if (typeof syncPremiumStatus === 'function') syncPremiumStatus();
+
+  // Supabase Auth 초기화 (로그인 세션 복원, OAuth 콜백 처리)
+  if (typeof initAuth === 'function') initAuth();
 });

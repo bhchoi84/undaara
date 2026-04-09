@@ -44,7 +44,7 @@ export default async function handler(req, res) {
   const secretKey = process.env.TOSS_SECRET_KEY;
   if (!secretKey) return res.status(500).json({ error: 'Payment not configured' });
 
-  const { paymentKey, orderId, amount, phone, userName, birthdate } = req.body;
+  const { paymentKey, orderId, amount, phone, userName, birthdate, user_id } = req.body;
   if (!paymentKey || !orderId || !amount) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
@@ -77,11 +77,14 @@ export default async function handler(req, res) {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + days);
 
-    // Supabase에 결제 내역 저장
+    // Supabase에 결제 내역 저장 (user_id 또는 전화번호 중 하나 이상 필요)
     const cleanPhone = (phone || '').replace(/[^0-9]/g, '');
-    if (cleanPhone && cleanPhone.length >= 10) {
+    const hasPhone = cleanPhone && cleanPhone.length >= 10;
+    const hasUserId = user_id && typeof user_id === 'string' && user_id.length > 0;
+    if (hasPhone || hasUserId) {
       await supabaseInsert('premium_purchases', {
-        phone: cleanPhone,
+        user_id: hasUserId ? user_id : null,
+        phone: hasPhone ? cleanPhone : null,
         name: userName || null,
         birthdate: birthdate || null,
         payment_key: data.paymentKey,

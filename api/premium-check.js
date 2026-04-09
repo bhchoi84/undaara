@@ -38,23 +38,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    // 전화번호 추출
-    let phone = '';
+    // user_id 우선, 없으면 전화번호로 조회
+    let phone = '', userId = '';
     if (req.method === 'GET') {
       phone = req.query?.phone || '';
+      userId = req.query?.user_id || '';
     } else if (req.method === 'POST') {
       phone = req.body?.phone || '';
+      userId = req.body?.user_id || '';
     }
 
-    phone = phone.replace(/[^0-9]/g, '');
-    if (!phone || phone.length < 10) {
-      return res.status(400).json({ error: 'Valid phone number required' });
+    phone = (phone || '').replace(/[^0-9]/g, '');
+    userId = (userId || '').toString().trim();
+
+    if (!userId && (!phone || phone.length < 10)) {
+      return res.status(400).json({ error: 'user_id or valid phone required' });
     }
 
-    // 활성 프리미엄 조회 (만료 안 된 것 중 가장 최근)
+    // UUID 형식 간단 검증
+    if (userId && !/^[0-9a-f-]{8,64}$/i.test(userId)) {
+      return res.status(400).json({ error: 'Invalid user_id format' });
+    }
+
+    // 활성 프리미엄 조회 (user_id 우선, 만료 안 된 것 중 가장 최근)
     const now = new Date().toISOString();
+    const filter = userId
+      ? `user_id=eq.${userId}`
+      : `phone=eq.${phone}`;
     const rows = await supabaseRest(
-      `/premium_purchases?phone=eq.${phone}&is_active=eq.true&expires_at=gte.${now}&order=expires_at.desc&limit=1`
+      `/premium_purchases?${filter}&is_active=eq.true&expires_at=gte.${now}&order=expires_at.desc&limit=1`
     );
 
     if (rows && rows.length > 0) {

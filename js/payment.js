@@ -52,6 +52,7 @@ async function handlePaymentSuccess(paymentKey, orderId, amount) {
     const u = getUserInfo();
     const phone = localStorage.getItem('undaara_pay_phone') || '';
 
+    const userId = (typeof getCurrentUserId === 'function') ? getCurrentUserId() : null;
     const res = await fetch('/api/payment-confirm', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -62,6 +63,7 @@ async function handlePaymentSuccess(paymentKey, orderId, amount) {
         phone,
         userName: u?.name || '',
         birthdate: u?.birthdate || '',
+        user_id: userId,
       }),
     });
     const data = await res.json();
@@ -144,11 +146,14 @@ async function restorePremium() {
 
 /* ── 앱 로드 시 서버 프리미엄 동기화 ── */
 async function syncPremiumStatus() {
+  // 로그인 상태면 user_id로 우선 동기화
+  const userId = (typeof getCurrentUserId === 'function') ? getCurrentUserId() : null;
   const phone = localStorage.getItem('undaara_phone');
-  if (!phone) return;
+  if (!userId && !phone) return;
 
   try {
-    const res = await fetch('/api/premium-check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ phone }) });
+    const body = userId ? { user_id: userId } : { phone };
+    const res = await fetch('/api/premium-check', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
     const data = await res.json();
 
     if (data.premium) {
