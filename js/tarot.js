@@ -69,7 +69,8 @@ function drawCards() {
       flippedCards[i] = true;
     });
     document.getElementById('card-hint').textContent = '카드가 모두 열렸어요 ✨';
-    btn.textContent = '다시 뽑기'; btn.disabled = false;
+    btn.textContent = '뽑기 완료'; btn.disabled = true;
+    document.querySelector('.cards-section')?.classList.add('cards-done');
     // 3장 요약 카드 (클릭 시 개별 해석으로 이동)
     const summaryHtml = drawnCards.map((c, i) =>
       `<div class="crb-summary-item" onclick="scrollToCardResult(${i})" data-idx="${i}">` +
@@ -83,6 +84,20 @@ function drawCards() {
     const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : '';
     askClaudeTarot3(`${ctx}타로 3카드: 오늘의 카드 ${drawnCards[0].name}(${drawnCards[0].keywords}), 미래의 카드 ${drawnCards[1].name}(${drawnCards[1].keywords}), 주의할 일의 카드 ${drawnCards[2].name}(${drawnCards[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n🌙 미래의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n⚠️ 주의할 일 — [카드명] (키워드)\n(3~4문장 해석)\n\n✨ 운 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`, drawnCards);
   }, 700);
+}
+
+function resetAndRedraw() {
+  // 사이드바 카드 UI 초기화
+  drawnCards = null;
+  flippedCards = [false, false, false];
+  for (let i = 0; i < 3; i++) {
+    const el = document.getElementById('sc' + i);
+    if (el) { el.classList.add('unflipped'); el.classList.remove('revealed'); el.querySelector('.card-sym').innerHTML = '✦'; }
+  }
+  document.getElementById('card-hint').textContent = '카드를 클릭해 한 장씩 열거나';
+  const btn = document.getElementById('draw-btn');
+  if (btn) { btn.textContent = '한번에 뽑기'; btn.disabled = false; }
+  drawCards();
 }
 
 function scrollToCardResult(i) {

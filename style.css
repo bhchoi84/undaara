@@ -3105,3 +3105,11 @@ body.sb-collapsed .sp-top-bar { display: none !important; }
   .login-section { padding: 10px 14px; }
   .login-modal { padding: 32px 22px 22px; }
 }
+
+/* ── 다시 뽑기 버튼 (채팅 내) ── */
+.redraw-btn { display: block; width: 100%; margin-top: 12px; padding: 10px 16px; background: linear-gradient(135deg, rgba(99,102,241,0.15), rgba(99,102,241,0.08)); border: 1px solid rgba(99,102,241,0.3); border-radius: 10px; color: var(--indigo-light); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+.redraw-btn:hover { background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(99,102,241,0.15)); border-color: rgba(99,102,241,0.5); }
+
+/* ── 카드 뽑기 완료 상태 ── */
+.cards-section.cards-done { opacity: 0.5; pointer-events: none; }
+.cards-section.cards-done .draw-btn { display: none; }
