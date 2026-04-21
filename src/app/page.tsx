@@ -19,7 +19,7 @@ import LimitModal from "@/components/modals/LimitModal";
 import Drawer from "@/components/drawer/Drawer";
 
 export default function Home() {
-  const { activeMenu, sidebarCollapsed, setCurrentUser, toggleSidebar } = useAppStore();
+  const { activeMenu, sidebarCollapsed, setCurrentUser, toggleSidebar, currentUser, setShowUserModal } = useAppStore();
   const scrollPosRef = useRef<Record<string, number>>({});
   const prevMenuRef = useRef(activeMenu);
   const touchStartY = useRef(0);
@@ -107,6 +107,20 @@ export default function Home() {
         <div className="main-header desktop-only">
           <div className="main-title font-serif">{TITLES[activeMenu] || "운 다아라"}</div>
         </div>
+        {currentUser && (
+          <div
+            className="user-info-badge"
+            onClick={() => setShowUserModal(true)}
+          >
+            <span className="user-badge-name">
+              {currentUser.user_metadata?.full_name ||
+                currentUser.user_metadata?.name ||
+                currentUser.user_metadata?.nickname ||
+                "회원"}
+            </span>
+            <span className="user-badge-dot">님</span>
+          </div>
+        )}
         {Object.entries(panels).map(([id, panel]) => (
           <div
             key={id}
