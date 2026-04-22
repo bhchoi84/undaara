@@ -104,23 +104,39 @@ export default function Home() {
     <div className={`app ${sidebarCollapsed ? "sb-collapsed" : ""}`}>
       <Sidebar />
       <main className="main">
+        {/* 데스크톱 헤더 */}
         <div className="main-header desktop-only">
           <div className="main-title font-serif">{TITLES[activeMenu] || "운 다아라"}</div>
+          {currentUser && (
+            <div
+              className="user-info-badge"
+              onClick={() => setShowUserModal(true)}
+            >
+              <span className="user-badge-name">
+                {currentUser.user_metadata?.full_name ||
+                  currentUser.user_metadata?.name ||
+                  currentUser.user_metadata?.nickname ||
+                  "회원"}
+              </span>
+              <span className="user-badge-dot">님</span>
+            </div>
+          )}
         </div>
-        {currentUser && (
-          <div
-            className="user-info-badge"
-            onClick={() => setShowUserModal(true)}
+        {/* 모바일 헤더 - 햄버거 메뉴 */}
+        <div className="mobile-header">
+          <div className="mobile-title font-serif">{TITLES[activeMenu] || "운 다아라"}</div>
+          <button
+            className="hamburger-btn"
+            onClick={() => toggleSidebar(!sidebarCollapsed ? true : false)}
+            aria-label="메뉴 열기"
           >
-            <span className="user-badge-name">
-              {currentUser.user_metadata?.full_name ||
-                currentUser.user_metadata?.name ||
-                currentUser.user_metadata?.nickname ||
-                "회원"}
-            </span>
-            <span className="user-badge-dot">님</span>
-          </div>
-        )}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
         {Object.entries(panels).map(([id, panel]) => (
           <div
             key={id}

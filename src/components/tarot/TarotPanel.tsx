@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useAppStore } from "@/lib/store";
-import { CARDS, CARD_POS } from "@/lib/cards";
+import { CARDS, CARD_POS, drawSeededCards, getDirectionLabel } from "@/lib/cards";
 import { getUserInfo, escapeHtml, getPopularMenu, buildSystemPrompt, formatReply, incrementUsage, canUseAPI } from "@/lib/utils";
 import { ChatPanel } from "@/components/chat";
 
@@ -70,7 +70,7 @@ export default function TarotPanel() {
       // 개별 카드 해석
       addMessage("tarot", {
         role: "bot",
-        content: `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[index]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`,
+        content: `<div class="card-reading-block"><div class="crb-pos">${CARD_POS[index]}</div><div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name} <span class="crb-direction ${c.reversed ? 'reversed' : 'upright'}">${getDirectionLabel(c)}</span></div><div class="crb-en">${c.en}</div></div></div><span class="crb-keywords">${c.keywords}</span></div>`,
         type: "card-reveal",
         cardIndex: index,
       });
@@ -82,8 +82,8 @@ export default function TarotPanel() {
     if (!ensureUser(drawAllCards)) return;
     if (!canUseAPI()) { setShowLimitModal(true); return; }
 
-    const shuffled = [...CARDS].sort(() => Math.random() - 0.5);
-    const cards = [shuffled[0], shuffled[1], shuffled[2]];
+    const u = getUserInfo();
+    const cards = drawSeededCards(3, u?.zodiac);
     setDrawnCards(cards);
 
     // 모든 카드 뒤집기
@@ -96,7 +96,7 @@ export default function TarotPanel() {
       const summaryHtml = cards.map((c, i) =>
         `<div class="crb-summary-item" data-idx="${i}">` +
           `<div class="crb-pos">${CARD_POS[i]}</div>` +
-          `<div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name}</div><div class="crb-en">${c.en}</div></div></div>` +
+          `<div class="crb-card"><div class="crb-sym">${c.sym}</div><div><div class="crb-name">${c.name} <span class="crb-direction ${c.reversed ? 'reversed' : 'upright'}">${getDirectionLabel(c)}</span></div><div class="crb-en">${c.en}</div></div></div>` +
           `<span class="crb-keywords">${c.keywords}</span>` +
         `</div>`
       ).join("");
@@ -117,7 +117,11 @@ export default function TarotPanel() {
 
     const u = getUserInfo();
     const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})의 ` : "";
-    const prompt = `${ctx}타로 3카드: 오늘의 카드 ${c[0].name}(${c[0].keywords}), 미래의 카드 ${c[1].name}(${c[1].keywords}), 주의할 일의 카드 ${c[2].name}(${c[2].keywords}). 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n🌙 미래의 카드 — [카드명] (키워드)\n(3~4문장 해석)\n\n⚠️ 주의할 일 — [카드명] (키워드)\n(3~4문장 해석)\n\n✨ 운 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`;
+    const cardDescs = c.map((card, i) => {
+      const dir = card.reversed ? '역방향' : '정방향';
+      return `${CARD_POS[i]}의 카드 ${card.name}(${dir}, 키워드: ${card.keywords})`;
+    }).join(', ');
+    const prompt = `${ctx}타로 3카드: ${cardDescs}. 아래 형식으로 각 카드별 해석을 줄바꿈으로 구분해서 알려주세요:\n\n🔮 오늘의 카드 — [카드명] ([정방향/역방향]) (키워드)\n(3~4문장 해석. 정방향이면 긍정적 의미 중심, 역방향이면 주의할 점과 극복 방법 중심으로)\n\n🌙 미래의 카드 — [카드명] ([정방향/역방향]) (키워드)\n(3~4문장 해석)\n\n⚠️ 주의할 일 — [카드명] ([정방향/역방향]) (키워드)\n(3~4문장 해석)\n\n✨ 운 다아라의 한마디\n(따뜻한 마무리 1문장)\n\n별자리 특성과 연결해 따뜻하고 구체적으로 해석해 주세요.`;
 
     setIsLoading(true);
     try {
@@ -162,7 +166,8 @@ export default function TarotPanel() {
 
     const u = getUserInfo();
     const ctx = u ? `${u.name}님(${u.zodiac}, ${u.age}세 ${u.gender})에게 ` : "";
-    const prompt = `${ctx}"${card.name}" 카드(${card.en}, 키워드: ${card.keywords})가 "${CARD_POS[index]}" 자리에 나왔어요. 이 카드가 지금 이 자리에서 전하는 메시지를 별자리 특성과 연결해 따뜻하고 공감 어린 말투로 2~3문장으로 이야기해 주세요.`;
+    const dir = card.reversed ? '역방향' : '정방향';
+    const prompt = `${ctx}"${card.name}" 카드(${card.en}, ${dir}, 키워드: ${card.keywords})가 "${CARD_POS[index]}" 자리에 나왔어요. ${card.reversed ? '역방향이므로 주의할 점과 극복 방법 위주로' : '정방향이므로 긍정적 메시지 위주로'} 이 카드가 지금 이 자리에서 전하는 메시지를 별자리 특성과 연결해 따뜻하고 공감 어린 말투로 2~3문장으로 이야기해 주세요.`;
 
     setIsLoading(true);
     try {
