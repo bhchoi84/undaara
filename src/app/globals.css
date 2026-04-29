@@ -4255,3 +4255,141 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 /* form-card 의 기본 height/min-height 누수 차단 */
 .phone-scroll .form-card { min-height: 0; }
 
+
+/* =====================================================================
+ *  ── 입력바 + 하단 네비 자연스러운 스택 ──
+ *  기존: 둘 다 position: absolute → 사이에 갭, 패널과 겹침
+ *  변경: phone-frame 의 flex 흐름 안에서 자연스럽게 바닥에 쌓이도록
+ * ===================================================================== */
+.phone-frame { display: flex; flex-direction: column; }
+
+.phone-scroll {
+  position: relative;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;       /* 패널 안쪽이 스크롤 */
+}
+.phone-scroll .panel {
+  /* 입력바/네비가 normal flow 로 들어왔으니 여백 제거 */
+  padding-bottom: 0;
+}
+
+/* 입력바 — 더 이상 absolute 가 아니라 phone-frame 의 마지막에서 두 번째 자식 */
+.input-bar-v2 {
+  position: static;
+  left: auto; right: auto; bottom: auto;
+  flex-shrink: 0;
+  background: rgba(12,19,33,0.96);
+  padding: 8px 12px 8px;        /* 기존 10/14 → 더 컴팩트 */
+  border-top: 0.5px solid rgba(255,255,255,0.06);
+}
+.input-bar-v2 .ib-input { padding: 9px 14px; font-size: 12.5px; }
+.input-bar-v2 .ib-send { width: 36px; height: 36px; border-radius: 18px; }
+
+/* 하단 네비 — 마지막 자식. 입력바와 갭 없이 붙도록 */
+.bottom-nav-v2 {
+  position: static;
+  left: auto; right: auto; bottom: auto;
+  flex-shrink: 0;
+  border-top: 0.5px solid rgba(255,255,255,0.04);
+}
+
+/* =====================================================================
+ *  ── 폼 컨트롤 높이 통일 (모든 인풋·버튼 38px) ──
+ * ===================================================================== */
+:root {
+  --ctrl-h: 38px;     /* 모든 폼 컨트롤 높이 */
+}
+
+.phone-scroll .form-panel { padding: 12px 14px 14px; }
+.phone-scroll .form-card { padding: 14px; gap: 8px; }
+
+.phone-scroll .form-row { margin-bottom: 8px; }
+.phone-scroll .form-label { margin-bottom: 4px; font-size: 10px; }
+
+/* 텍스트 입력 / select / 생년월일 버튼 — 동일 높이 38px */
+.phone-scroll .form-input,
+.phone-scroll select.form-input,
+.phone-scroll .birth-pick-btn {
+  height: var(--ctrl-h);
+  min-height: var(--ctrl-h);
+  padding: 0 12px;
+  font-size: 12.5px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 0.5px solid var(--border2);
+  color: var(--text);
+  width: 100%;
+  font-family: inherit;
+  cursor: text;
+}
+.phone-scroll select.form-input { cursor: pointer; padding-right: 28px; }
+.phone-scroll .birth-pick-btn {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.phone-scroll .birth-pick-btn.has-value { color: var(--text); }
+
+/* 성별 / 양·음력 버튼 — 같은 38px 라인 */
+.phone-scroll .gender-btn,
+.phone-scroll .cal-btn {
+  height: var(--ctrl-h);
+  min-height: var(--ctrl-h);
+  padding: 0 8px;
+  font-size: 12.5px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* 양·음력 row 와 생년월일 row 사이 간격 축소 */
+.phone-scroll .user-modal-gender { gap: 6px; }
+.phone-scroll .form-row .user-modal-gender { margin-top: 6px !important; }
+
+/* 생년월일 select row 도 6px gap */
+.phone-scroll .birth-select-row { gap: 6px; }
+
+/* 제출 버튼 — 살짝 키운 44px 로 일관 */
+.phone-scroll .submit-btn {
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 10px;
+  margin-top: 6px;
+}
+
+/* 궁합 섹션 라벨 — 위 여백 줄임 */
+.phone-scroll .match-section-label {
+  font-size: 12px;
+  padding: 4px 0 2px;
+  margin-top: 2px;
+  border-top: 0.5px solid var(--border2);
+}
+.phone-scroll .match-info-summary {
+  height: var(--ctrl-h);
+  display: flex; align-items: center;
+  padding: 0 12px;
+  font-size: 12.5px;
+}
+
+/* 카피라이트 — 작고 위로 붙여서 공간 절약 */
+.phone-scroll .panel-copyright {
+  font-size: 9px; color: var(--text-dim);
+  text-align: center; margin-top: 8px;
+  padding-bottom: 2px;
+}
+
+
+/* form-card / form-panel 은 콘텐츠 크기에 자연스럽게 맞춤 (이전의 flex:1 0 auto 무력화) */
+.phone-scroll .form-card {
+  flex: 0 0 auto;
+}
+.phone-scroll .form-card .submit-btn { margin-top: 6px; }
+.phone-scroll .form-panel { flex: 0 0 auto; }
+
