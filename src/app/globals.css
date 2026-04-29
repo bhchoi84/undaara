@@ -4393,3 +4393,126 @@ html, body { overflow-x: hidden; max-width: 100vw; }
 .phone-scroll .form-card .submit-btn { margin-top: 6px; }
 .phone-scroll .form-panel { flex: 0 0 auto; }
 
+
+/* =====================================================================
+ *  ── 폼 패널 반응형 (콘텐츠가 짧을 때 빈 공간 분배) ──
+ *  목표:
+ *  1) form-panel / form-card 가 패널 높이를 다 채움
+ *  2) 제출 버튼은 폼 바닥에 붙음 (margin-top: auto)
+ *  3) 카피라이트는 제출 버튼 바로 아래
+ *  4) 콘텐츠가 패널보다 길면 자연스럽게 panel 이 스크롤
+ * ===================================================================== */
+.phone-scroll .form-panel {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100%;
+}
+
+.phone-scroll .form-card {
+  flex: 1 1 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  min-height: 0;
+}
+
+/* 제목/설명 — 위에 자연 정렬 */
+.phone-scroll .form-card > .form-title { margin-bottom: 0; }
+.phone-scroll .form-card > .form-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-bottom: 4px;
+}
+
+/* form-row 자체는 자연 높이 */
+.phone-scroll .form-card > .form-row {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+}
+
+/* 제출 버튼은 카드 바닥에 붙음 — 위쪽 빈 공간이 자동으로 분배 */
+.phone-scroll .form-card > .submit-btn {
+  margin-top: auto !important;
+}
+
+/* 카피라이트는 제출 버튼 바로 아래 */
+.phone-scroll .form-card > .panel-copyright {
+  margin-top: 8px;
+  padding-bottom: 0;
+}
+
+/* zodiac grid — 12지신 그리드도 컨트롤 라인과 어울리도록 */
+.phone-scroll .zodiac-grid { gap: 6px; }
+.phone-scroll .zodiac-btn {
+  height: var(--ctrl-h);
+  min-height: var(--ctrl-h);
+  padding: 0 4px;
+  font-size: 11px;
+  line-height: 1.15;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  text-align: center;
+}
+
+
+/* =====================================================================
+ *  ── 손금/관상 패널 — 콘텐츠 컴팩트 + 카피라이트 바닥 정렬 ──
+ *  palm-panel 은 form-card 가 없는 구조 → 별도 규칙
+ * ===================================================================== */
+.phone-scroll .form-panel:has(.palm-scanner) {
+  padding: 14px 14px 12px;
+}
+.phone-scroll .form-panel .palm-header {
+  margin-bottom: 8px;
+  padding-top: 4px;
+}
+.phone-scroll .form-panel .palm-header-title { font-size: 18px; }
+.phone-scroll .form-panel .palm-header-sub { font-size: 12px; }
+
+/* 모드 버튼 (오른손/왼손/관상) 도 38px 라인 */
+.phone-scroll .palm-mode-select {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.phone-scroll .palm-mode-btn {
+  height: 56px;             /* 아이콘+라벨 두 줄이라 약간 더 큼 */
+  min-height: 56px;
+  padding: 6px 4px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.phone-scroll .palm-mode-icon { font-size: 20px; line-height: 1; }
+.phone-scroll .palm-mode-label { font-size: 11px; line-height: 1.1; }
+
+/* 스캐너 — 살짝 작게, margin 도 줄여 가운데 배치 */
+.phone-scroll .palm-scanner {
+  width: 180px;
+  height: 180px;
+  margin: 8px auto 0;
+}
+.phone-scroll .palm-scanner-ring { width: 180px; height: 180px; }
+.phone-scroll .palm-scanner-ring-outer { width: 200px; height: 200px; }
+.phone-scroll .palm-scanner-inner { width: 160px; height: 160px; }
+.phone-scroll .palm-scanner-icon { width: 36px; height: 36px; }
+.phone-scroll .palm-scanner-text { font-size: 12px; }
+.phone-scroll .palm-scanner-sub { font-size: 10px; }
+
+/* AI 분석 시작 버튼 + 카피라이트 — 카드 없는 폼이라 form-card 룰 안 먹음
+   직접 form-panel 안에서 바닥에 정렬 */
+.phone-scroll .form-panel:has(.palm-scanner) > .submit-btn {
+  margin-top: auto !important;
+}
+.phone-scroll .form-panel:has(.palm-scanner) > .panel-copyright {
+  /* submit-btn 이 있으면 그 바로 아래, 없으면 자기가 바닥으로 */
+  margin-top: 8px;
+}
+.phone-scroll .form-panel:has(.palm-scanner):not(:has(> .submit-btn)) > .panel-copyright {
+  margin-top: auto;
+}
+
