@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 로컬 도구 / 큰 프로토타입 파일
+.claude/
+ui-html/

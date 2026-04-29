@@ -5,7 +5,6 @@ import { useAppStore } from "@/lib/store";
 import { TITLES } from "@/lib/cards";
 import { clearOldCache } from "@/lib/utils";
 import { getSupabase } from "@/lib/supabase";
-import { Sidebar } from "@/components/sidebar";
 import TarotPanel from "@/components/tarot/TarotPanel";
 import TodayPanel from "@/components/today/TodayPanel";
 import PalmPanel from "@/components/palm/PalmPanel";
@@ -16,44 +15,25 @@ import MonthlyPanel from "@/components/monthly/MonthlyPanel";
 import UserInfoModal from "@/components/modals/UserInfoModal";
 import LoginModal from "@/components/modals/LoginModal";
 import LimitModal from "@/components/modals/LimitModal";
-import Drawer from "@/components/drawer/Drawer";
+import StatusBar from "@/components/common/StatusBar";
+import BottomNav from "@/components/common/BottomNav";
+import InputBar from "@/components/common/InputBar";
 
 export default function Home() {
-  const { activeMenu, sidebarCollapsed, setCurrentUser, toggleSidebar, currentUser, setShowUserModal } = useAppStore();
+  const {
+    activeMenu,
+    setCurrentUser,
+    currentUser,
+    setShowUserModal,
+  } = useAppStore();
   const scrollPosRef = useRef<Record<string, number>>({});
   const prevMenuRef = useRef(activeMenu);
-  const touchStartY = useRef(0);
 
   useEffect(() => {
     clearOldCache();
     initAuth();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // 패널 스크롤 시 사이드바 자동 접기 (모바일)
-  const handlePanelScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
-    if (window.innerWidth <= 768 && e.currentTarget.scrollTop > 30) {
-      toggleSidebar(true);
-    }
-  }, [toggleSidebar]);
-
-  // 터치 스와이프 위로 → 사이드바 접기 (모바일)
-  useEffect(() => {
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartY.current = e.touches[0].clientY;
-    };
-    const onTouchMove = (e: TouchEvent) => {
-      if (window.innerWidth > 768) return;
-      const deltaY = touchStartY.current - e.touches[0].clientY;
-      if (deltaY > 15) toggleSidebar(true);
-    };
-    document.addEventListener("touchstart", onTouchStart, { passive: true });
-    document.addEventListener("touchmove", onTouchMove, { passive: true });
-    return () => {
-      document.removeEventListener("touchstart", onTouchStart);
-      document.removeEventListener("touchmove", onTouchMove);
-    };
-  }, [toggleSidebar]);
 
   // 메뉴 전환 시 스크롤 위치 저장/복원
   useEffect(() => {
@@ -63,21 +43,36 @@ export default function Home() {
       if (prevPanel) scrollPosRef.current[prev] = prevPanel.scrollTop;
 
       const nextPanel = document.querySelector<HTMLElement>(`.panel-${activeMenu}`);
-      if (nextPanel && scrollPosRef.current[activeMenu] !== undefined) {
-        setTimeout(() => { nextPanel.scrollTop = scrollPosRef.current[activeMenu]; }, 0);
+      if (nextPanel) {
+        const saved = scrollPosRef.current[activeMenu];
+        setTimeout(() => {
+          nextPanel.scrollTop = saved ?? 0;
+        }, 0);
       }
       prevMenuRef.current = activeMenu;
     }
   }, [activeMenu]);
 
+  // 패널 스크롤 시 헤더 그림자 효과 (선택)
+  const handlePanelScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const el = e.currentTarget.closest(".phone-frame");
+      if (!el) return;
+      if (e.currentTarget.scrollTop > 8) el.classList.add("scrolled");
+      else el.classList.remove("scrolled");
+    },
+    []
+  );
+
   async function initAuth() {
     try {
       const sb = getSupabase();
-      const { data: { session } } = await sb.auth.getSession();
+      const {
+        data: { session },
+      } = await sb.auth.getSession();
       if (session?.user) {
         setCurrentUser(session.user);
       }
-
       sb.auth.onAuthStateChange((event, session) => {
         if (event === "SIGNED_IN" && session?.user) {
           setCurrentUser(session.user);
@@ -101,54 +96,60 @@ export default function Home() {
   };
 
   return (
-    <div className={`app ${sidebarCollapsed ? "sb-collapsed" : ""}`}>
-      <Sidebar />
-      <main className="main">
-        {/* 데스크톱 헤더 */}
-        <div className="main-header desktop-only">
-          <div className="main-title font-serif">{TITLES[activeMenu] || "운 다아라"}</div>
+    <div className="app-shell">
+      <div className="phone-frame">
+        <StatusBar />
+
+        {/* 상단 타이틀 + 로고 */}
+        <header className="phone-header">
+          <div className="ph-logo">
+            <div className="ph-logo-mark" aria-hidden>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                <path d="M12 2 L13.5 9.5 L21 11 L13.5 12.5 L12 20 L10.5 12.5 L3 11 L10.5 9.5 Z" />
+              </svg>
+            </div>
+            <div className="ph-logo-text">
+              <div className="ph-logo-name font-serif">
+                {TITLES[activeMenu] || "운 다아라"}
+              </div>
+              <div className="ph-logo-sub">당신의 행운 안내자</div>
+            </div>
+          </div>
           {currentUser && (
-            <div
-              className="user-info-badge"
+            <button
+              className="ph-user-badge"
               onClick={() => setShowUserModal(true)}
+              aria-label="내 정보 열기"
             >
-              <span className="user-badge-name">
+              <span>
                 {currentUser.user_metadata?.full_name ||
                   currentUser.user_metadata?.name ||
                   currentUser.user_metadata?.nickname ||
                   "회원"}
               </span>
-              <span className="user-badge-dot">님</span>
-            </div>
+              <span className="ph-user-dot">님</span>
+            </button>
           )}
-        </div>
-        {/* 모바일 헤더 - 햄버거 메뉴 */}
-        <div className="mobile-header">
-          <div className="mobile-title font-serif">{TITLES[activeMenu] || "운 다아라"}</div>
-          <button
-            className="hamburger-btn"
-            onClick={() => toggleSidebar(!sidebarCollapsed ? true : false)}
-            aria-label="메뉴 열기"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
-            </svg>
-          </button>
-        </div>
-        {Object.entries(panels).map(([id, panel]) => (
-          <div
-            key={id}
-            className={`panel panel-${id} ${activeMenu === id ? "active" : ""}`}
-            onScroll={activeMenu === id ? handlePanelScroll : undefined}
-          >
-            {panel}
-          </div>
-        ))}
-      </main>
+        </header>
 
-      <Drawer />
+        {/* 스크롤 영역 (각 패널이 active 일 때만 표시) */}
+        <div className="phone-scroll">
+          {Object.entries(panels).map(([id, panel]) => (
+            <div
+              key={id}
+              className={`panel panel-${id} ${activeMenu === id ? "active" : ""}`}
+              onScroll={activeMenu === id ? handlePanelScroll : undefined}
+            >
+              {panel}
+            </div>
+          ))}
+        </div>
+
+        {/* 입력창 + 하단 네비 */}
+        <InputBar />
+        <BottomNav />
+      </div>
+
       <UserInfoModal />
       <LoginModal />
       <LimitModal />

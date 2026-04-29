@@ -102,7 +102,7 @@ interface AppState {
 let msgCounter = 0;
 
 export const useAppStore = create<AppState>((set) => ({
-  activeMenu: 'tarot',
+  activeMenu: 'today',
   setActiveMenu: (menu) => set({ activeMenu: menu }),
 
   sidebarCollapsed: false,
