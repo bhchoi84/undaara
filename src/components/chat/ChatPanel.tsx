@@ -18,8 +18,18 @@ export default function ChatPanel({ menuId, showInput = false, children }: Props
   const menuMessages = messages[menuId] || [];
 
   useEffect(() => {
-    if (messagesRef.current) {
-      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    // 새 메시지가 추가되면 패널 스크롤을 결과 쪽으로 부드럽게 이동
+    // (폰 프레임 레이아웃에서는 panel 이 스크롤 컨테이너이므로 scrollIntoView 사용)
+    if (!messagesRef.current || menuMessages.length === 0) return;
+    try {
+      const last = messagesRef.current.lastElementChild as HTMLElement | null;
+      if (last && typeof last.scrollIntoView === "function") {
+        last.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        messagesRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } catch {
+      // 구형 브라우저 대비 — 무시
     }
   }, [menuMessages.length]);
 

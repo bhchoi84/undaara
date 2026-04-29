@@ -4199,3 +4199,59 @@ html, body { overflow-x: hidden; max-width: 100vw; }
   .bottom-nav-v2 { padding-top: 4px; }
 }
 
+
+/* =====================================================================
+ *  ── 폰 프레임 안에서 폼/메시지 레이아웃 정리 ──
+ *  - 패널 자체가 스크롤 컨테이너 → 안쪽 form-panel/messages 의 이중 스크롤 제거
+ *  - 메시지가 없을 때: 폼이 입력바 위까지 꽉 채움
+ *  - 메시지가 들어오면: 폼은 그대로 두고 아래에 자연스럽게 흐름,
+ *    제출 시 ChatPanel 이 scrollIntoView 로 결과를 보여줌
+ * ===================================================================== */
+
+/* 패널 내부의 기본 컨테이너 — 단일 스크롤로 통일 */
+.phone-scroll .panel-inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  height: auto;
+}
+
+/* form-panel: 기본은 자기 콘텐츠 크기로, 남는 공간은 grow 로 채움 */
+.phone-scroll .form-panel {
+  flex: 1 0 auto;          /* grow 1, shrink 0 → 콘텐츠 아래로 안 잘림 */
+  overflow: visible;        /* 안쪽 자체 스크롤 제거 (panel 이 스크롤) */
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* form-card: form-panel 안에서 다시 grow 해서 버튼이 항상 바닥에 닿도록 */
+.phone-scroll .form-card {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.phone-scroll .form-card .submit-btn { margin-top: auto; }
+
+/* 메시지 영역: 자연 높이, panel 이 스크롤됨 */
+.phone-scroll .messages {
+  flex: 0 0 auto;
+  overflow: visible;
+  padding: 0 16px 12px;
+  scroll-margin-top: 8px;
+}
+
+/* 가로 스크롤바 / 우측 스크롤바 시각 정리 */
+.phone-scroll .panel { scrollbar-gutter: stable both-edges; }
+.phone-scroll .panel::-webkit-scrollbar { width: 4px; }
+.phone-scroll .panel::-webkit-scrollbar-track { background: transparent; }
+.phone-scroll .panel::-webkit-scrollbar-thumb {
+  background: rgba(180,160,255,0.18);
+  border-radius: 2px;
+}
+
+/* form-card 의 기본 height/min-height 누수 차단 */
+.phone-scroll .form-card { min-height: 0; }
+
